@@ -136,16 +136,6 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
             const currentPct = studentData.attendance.percent;
             const lastPct = studentData.lastQuarter.attendance.percent;
             const deltaPct = Math.round(currentPct - lastPct);
-            const bnDelta = toBengaliNumber(Math.abs(deltaPct)) + '%';
-            
-            let footerText = '';
-            if (deltaPct > 0) {
-              footerText = `দারুণ! গত কোয়ার্টারের চেয়ে ${bnDelta} বেশি ক্লাসে উপস্থিত ছিলে—চালিয়ে যাও! 🔥`;
-            } else if (deltaPct === 0) {
-              footerText = `গত কোয়ার্টারের মতোই চলছে—এবার এক ধাপ এগোই! 🙂`;
-            } else {
-              footerText = `গত কোয়ার্টার থেকে ${bnDelta} কম ক্লাসে উপস্থিত ছিলে— ছোট্ট একটা ধাক্কার প্রয়োজন! 💪`;
-            }
             
             return (
               <p className="text-[14px] md:text-[15px] text-gray-600 font-noto-bengali text-center mt-4">

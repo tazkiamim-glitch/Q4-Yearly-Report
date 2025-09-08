@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell } from 'recharts';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
-import { formatHM, formatDelta } from '../utils/compare';
+import { formatDelta } from '../utils/compare';
 import type { EngagementLevel } from '../utils/studentTexts';
 import type { StudentData } from '../utils/mockStudents';
 
