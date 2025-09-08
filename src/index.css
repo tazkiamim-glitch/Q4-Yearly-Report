@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+body {
+  @apply bg-gray-50;
+  overflow: hidden;
+}
+
+.gradient-bg {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(180deg, #FFF7E8 0%, #FFF 100%);
+}
+
+.gradient-bg-live-class {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(180deg, #FFE6F3 0%, #FFF7E8 100%);
+}
+
+.gradient-bg-quiz-performance {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(180deg, #F3F7FF 0%, #FFF7E8 100%);
+}
+
+.gradient-bg-streak-tracker {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(180deg, #FFF7E8 0%, #FFF3D6 100%);
+}
+
+.gradient-bg-study-time {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(180deg, #E6FFF3 0%, #FFF7E8 100%);
+}
+
+.gradient-bg-final-congrats {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(180deg, #FFF7E8 0%, #FFE6F3 100%);
+}
+
+.gradient-bg-day-of-week {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(135deg, #f3e6ff 0%, #f9d7ec 100%);
+}
+
+.gradient-bg-comparison {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(180deg, #FFF6E8 0%, #FFF0F6 50%, #FFE7F3 100%);
+}
+
+.score-gradient-bg {
+  background: linear-gradient(90deg, #FFF7E8 0%, #F3F7FF 100%);
+}
+
+.btn-gradient-cta {
+  background: linear-gradient(90deg, #C94090 0%, #3B4CB9 100%);
+  color: #fff;
+}
+
+.card-oval {
+  @apply bg-white rounded-3xl shadow-lg px-3 py-6 sm:px-4 sm:py-8 md:px-6 md:py-10 max-w-md mx-auto relative z-20;
+}
+
+.slide-container {
+  height: 100dvh;
+  min-height: 0 !important;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.confetti {
+  @apply absolute;
+  z-index: 10;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  0% { top: -2rem; }
+  100% { top: 120vh; }
+}
+
+.trophy-gradient-bg {
+  background: linear-gradient(135deg, #FFB800 0%, #FF6B9A 100%);
+  box-shadow: 0 2px 8px 0 rgba(255, 107, 154, 0.10);
+}
+
+.fixed-dot-indicator {
+  @apply fixed left-1/2 -translate-x-1/2 z-30 flex justify-center items-center gap-1;
+  top: 20px;
+  width: 100vw;
+  max-width: 100vw;
+  pointer-events: none;
+}
+
+.fade-in-slide {
+  opacity: 0.5;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-in-slide.visible {
+  opacity: 1;
+}
+
+.sharing-mode .streak-box-text > span,
+.sharing-mode .streak-box-text:not(:has(span)) {
+  /* Move only the text inside the box up by 3px, do not affect horizontal alignment */
+  transform: translateY(-8px);
+}
+/* Remove the fire emoji adjustment */
+.sharing-mode .fire-emoji {
+  margin-bottom: 12px;
+}
+.sharing-mode .streak-box-number {
+  transform: translateY(-3px);
+}
+.sharing-mode .studytime-pie-number {
+  transform: translateY(-12px);
+}
+.sharing-mode .studytime-stats-col {
+  transform: translateY(-10px);
+}
+.sharing-mode .finalcongrats-score-number {
+  transform: translateY(-15px);
+}
+.sharing-mode .quizperformance-pie-number {
+  transform: translateY(-10px);
+}
+.sharing-mode .quizperformance-stats-col {
+  transform: translateY(-10px);
+}
+.sharing-mode .liveclass-pie-number {
+  transform: translateY(-10px);
+}
+.sharing-mode .liveclass-stats-col {
+  transform: translateY(-10px);
+}
+.sharing-mode .welcome-student-emoji {
+  transform: translateY(-10px);
+}
+.sharing-mode .modeltest-bar-value {
+  transform: translateY(-10px);
+}
+.sharing-mode .modeltest-stats-col {
+  transform: translateY(-8px);
+}
+
+.sharing-mode .streak-stats-text {
+  transform: translateY(-4px);
+}
+
+.student-name-display {
+  transform: translateX(-50%);
+}
+
+.sharing-mode .student-name-display {
+  transform: translate(-50%, -4px);
+}
+
+.sharing-mode .dayofweek-bar-label {
+  transform: translateY(-4px);
+}
+.sharing-mode .dayofweek-day-label {
+  transform: translateY(-4px);
+}
+
+.animate-pop {
+  animation: pop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
