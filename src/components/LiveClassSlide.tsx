@@ -149,7 +149,7 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
                     </>
                   ) : (
                   <>
-                    গত কোয়ার্টার থেকে <span className="text-[#CF278D] font-semibold">{toBengaliNumber(Math.abs(deltaPct))}%</span> কম ক্লাসে উপস্থিত ছিলে 😔<br />আগামী কোয়ার্টারে করো বাজিমাত! 💪
+                    গত কোয়ার্টার থেকে ক্লাস উপস্থিতি <span className="text-[#CF278D] font-semibold">{toBengaliNumber(Math.abs(deltaPct))}%</span> কম😔<br />আজ থেকেই গতি ফেরাও! 💪
                   </>
                 )}
               </p>

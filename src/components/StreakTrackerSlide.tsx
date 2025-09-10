@@ -143,16 +143,18 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
                 <p className="text-[14px] md:text-[15px] text-gray-600 font-noto-bengali text-center">
                   {deltaDays > 0 ? (
                     <>
-                      গত কোয়ার্টারে ছিল <span className="text-[#CF278D] font-semibold">{toBengaliNumber(lastDays)}</span> দিন - এভাবেই এগিয়ে যাও! 🔥
-                    </>
+                    গত কোয়ার্টারে ছিল <span className="text-[#CF278D] font-semibold">{toBengaliNumber(lastDays)} দিন</span> - এভাবেই এগিয়ে যাও! 🔥
+                  </>
                   ) : deltaDays === 0 ? (
-                    <>
-                      গত কোয়ার্টারেও ছিল <span className="text-[#CF278D] font-semibold">{toBengaliNumber(lastDays)} দিন</span><br />ছোট্ট একটু ধাক্কায় নতুন রেকর্ড হবে! 🙂
-                    </>
+                  <>
+                    গত কোয়ার্টারেও ছিল <span className="text-[#CF278D] font-semibold">{toBengaliNumber(lastDays)} দিন</span><br />
+                    ছোট্ট একটু ধাক্কায় নতুন রেকর্ড হবে! 🙂
+                  </>
                   ) : (
-                    <>
-                      গত কোয়ার্টারে ছিল <span className="text-[#CF278D] font-semibold">{toBengaliNumber(lastDays)} দিন</span> - ওহো, পিছিয়ে গেলে নাকি?<br />এবার ঘুরে দাঁড়াই! 💪
-                    </>
+                  <>
+                    গত কোয়ার্টারে ছিল <span className="text-[#CF278D] font-semibold">{toBengaliNumber(lastDays)} দিন</span> - ওহো, পিছিয়ে গেলে নাকি?<br />
+                    এবার ঘুরে দাঁড়াই! 💪
+                  </>
                   )}
                 </p>
               </div>

@@ -175,32 +175,32 @@ export const StudyTimeSlide = ({ studentData, onPrev, onNext }: StudyTimeSlidePr
             {studentData.engagementLevel === 'high' ? (
               // High engagement - Increase case
               <>
-                <p className="mb-1">
-                  সুপার! গত কোয়ার্টার থেকে <span className="desc-number text-shikho-pink">{formatDelta(Math.abs(deltaMin))} ঘন্টা</span> বেশি সময় দিয়েছো! 🔥
-                </p>
-                <p>
-                  এই ধারাই তোমার জেতা!
-                </p>
+                 <p className="mb-1">
+    গত কোয়ার্টার থেকে <span className="desc-number text-shikho-pink font-bold"><strong>{formatDelta(Math.abs(deltaMin))} ঘণ্টা</strong></span> বেশি সময় দিয়েছো! 🔥
+  </p>
+  <p>
+    এই ধারাই তোমার জেতা!
+  </p>
               </>
             ) : studentData.engagementLevel === 'moderate' ? (
               // Moderate engagement - Same case
               <>
                 <p className="mb-1">
-                  গত কোয়ার্টারের মতো এক-ই সময় দিয়েছো!
-                </p>
-                <p>
-                  একটু বাড়ালেই বড় জাম্প! 🙂
-                </p>
+      গত কোয়ার্টারের মতো এক-ই সময় দিয়েছো!
+    </p>
+    <p>
+      একটু বাড়ালেই বড় জাম্প! 🙂
+    </p>
               </>
             ) : (
               // Low engagement - Drop case
               <>
                 <p className="mb-1">
-                  গত কোয়ার্টার থেকে <span className="desc-number text-shikho-blue">{formatDelta(Math.abs(deltaMin))} ঘন্টা</span> কম পড়েছো 😔
-                </p>
-                <p>
-                  আজ থেকেই ঘুরে দাঁড়াও! 💪
-                </p>
+      গত কোয়ার্টার থেকে পড়াশোনা <span className="desc-number text-shikho-pink font-bold"><strong>{formatDelta(Math.abs(deltaMin))} ঘণ্টা</strong></span> কম 😔
+    </p>
+    <p>
+      আজ থেকেই ঘুরে দাঁড়াও! 💪
+    </p>
               </>
             )}
           </div>
