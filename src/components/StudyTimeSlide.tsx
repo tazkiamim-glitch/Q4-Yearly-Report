@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { FallbackModal } from './FallbackModal';
@@ -7,8 +8,10 @@ import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
 import { formatDelta } from '../utils/compare';
+import { useStudentDataContext } from '../context/StudentDataContext';
 import type { EngagementLevel } from '../utils/studentTexts';
 import type { StudentData } from '../utils/mockStudents';
+import type { ReportMode } from '../context/StudentDataContext';
 
 interface StudyTimeSlideProps {
   studentData: StudentData;
@@ -118,7 +121,12 @@ export const StudyTimeSlide = ({ studentData, onPrev, onNext }: StudyTimeSlidePr
     );
   }
 
-  const texts = getStudentTexts('studyTime', studentData.engagementLevel as EngagementLevel);
+  const { reportMode: contextReportMode } = useStudentDataContext();
+  const { mode } = useParams<{ mode?: string }>();
+  
+  // Compute reportMode directly from URL parameter for immediate use
+  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  const texts = getStudentTexts('studyTime', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('studyTime', studentData.engagementLevel as EngagementLevel);
 
   return (

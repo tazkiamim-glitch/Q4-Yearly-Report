@@ -1,12 +1,36 @@
 import { useRef, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { FallbackModal } from './FallbackModal';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, LabelList } from 'recharts';
+import { motion } from 'framer-motion';
+import { useStudentDataContext } from '../context/StudentDataContext';
 import type { EngagementLevel } from '../utils/studentTexts';
 import type { StudentData } from '../utils/mockStudents';
+import type { ReportMode } from '../context/StudentDataContext';
+
+// Custom animated bar shape for staggered growth (Q1→Q4)
+const CustomAnimatedBar = (props: any) => {
+  const { x, y, width, height, fill, index } = props;
+  const delay = (index ?? 0) * 0.3;
+  const cornerRadius = 10; // rounded corners
+  return (
+    <motion.rect
+      x={x}
+      width={width}
+      fill={fill}
+      rx={cornerRadius}
+      ry={cornerRadius}
+      initial={{ y: y + height, height: 0 }}
+      animate={{ y, height }}
+      transition={{ duration: 0.6, delay, ease: [0.19, 1, 0.22, 1] }}
+    />
+  );
+};
 
 interface LiveClassSlideProps {
   studentData: StudentData;
@@ -19,9 +43,28 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
   const { handleShare, modalOpen, setModalOpen, imgUrl, handleDownload, hideUI } = useShare({});
   const [animatedPercent, setAnimatedPercent] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [chartKey, setChartKey] = useState(0);
   const percent = studentData.attendance.percent;
-  const texts = getStudentTexts('liveClass', studentData.engagementLevel as EngagementLevel);
+  const { reportMode: contextReportMode } = useStudentDataContext();
+  const { mode } = useParams<{ mode?: string }>();
+  
+  // Compute reportMode directly from URL parameter for immediate use
+  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  const isYearlyReport = reportMode === 'YEARLY';
+  const texts = getStudentTexts('liveClass', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('liveClass', studentData.engagementLevel as EngagementLevel);
+  const yearlyTrend = studentData.yearlyAttendance ?? { q1: percent, q2: percent, q3: percent, q4: percent };
+  const areaChartData = [
+    { quarter: 'কোয়ার্টার ১', percent: yearlyTrend.q1 },
+    { quarter: 'কোয়ার্টার ২', percent: yearlyTrend.q2 },
+    { quarter: 'কোয়ার্টার ৩', percent: yearlyTrend.q3 },
+    { quarter: 'কোয়ার্টার ৪', percent: yearlyTrend.q4 },
+  ];
+  const summaryStats = [
+    { label: 'মোট ক্লাস', value: studentData.attendance.total, color: 'text-shikho-blue' },
+    { label: 'উপস্থিত', value: studentData.attendance.attended, color: 'text-shikho-pink' },
+    { label: 'অনুপস্থিত', value: studentData.attendance.missed, color: 'text-shikho-red' },
+  ];
 
   useEffect(() => {
     setIsVisible(true);
@@ -42,6 +85,13 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
   }, [percent]);
+
+  // Reset chart key to restart animation when component becomes visible or mode changes
+  useEffect(() => {
+    if (isYearlyReport) {
+      setChartKey(prev => prev + 1);
+    }
+  }, [isYearlyReport, isVisible]);
 
   // Pie chart dimensions
   const size = 160;
@@ -77,13 +127,87 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
         {/* Card */}
         <div
           ref={cardRef}
-          className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}
+          className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center relative ${isYearlyReport ? 'py-2 px-3' : 'py-2 px-2'} mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}
         >
           {/* Header */}
-          <div className="text-center mb-1 mt-1">
-            <h1 className="text-shikho-blue text-lg font-noto-bengali mb-2 font-bold">{texts.header}</h1>
+          <div className="text-center mb-1 mt-1 px-2">
+            <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${isYearlyReport ? 'text-xl' : 'text-lg'} mb-0`}>
+              {texts.header}
+            </h1>
           </div>
-          {/* Pie Chart */}
+          {isYearlyReport ? (
+            <>
+              <div className="w-full mt-1 flex justify-center items-center px-1">
+                <div className="rounded-3xl w-full">
+                  <div className="w-full flex justify-center items-center">
+                    <div 
+                      key={chartKey}
+                      style={{ width: '100%', paddingTop: 8 }}
+                    >
+                      {/* Wrapper to squeeze the bars together */}
+                      <div className="w-full max-w-[320px] mx-auto mt-2">
+                        <ResponsiveContainer key={chartKey} width="100%" height={180}>
+                          <BarChart data={areaChartData} margin={{ top: 16, right: 0, left: 0, bottom: 0 }} barSize={22} barCategoryGap="0%" barGap={0}>
+                            <CartesianGrid vertical={false} stroke="#F1F5F9" strokeDasharray="3 3" />
+                          <XAxis
+                            dataKey="quarter"
+                            interval={0}
+                            tick={{ fontSize: 11, fill: '#6B7280' }}
+                            axisLine={false}
+                            tickLine={false}
+                            dy={10}
+                            height={50}
+                          />
+                          <YAxis
+                            domain={[0, 100]}
+                            hide
+                          />
+                            <Bar dataKey="percent" isAnimationActive={false} shape={<CustomAnimatedBar />}> 
+                              {areaChartData.map((_, index) => {
+                                const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EC4899'];
+                                return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />;
+                              })}
+                              <LabelList
+                                  dataKey="percent"
+                                  position="top"
+                                  formatter={(v: number) => `${toBengaliNumber(Math.round(v))}%`}
+                                  fill="#CF278D"
+                                  fontSize={12}
+                                  style={{ fontWeight: 700, fontFamily: 'Noto Sans Bengali' }}
+                                />
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Full-width compact banner between chart and stats */}
+              <div className="w-full px-2 mt-2 mb-1">
+                <div className="w-full rounded-xl bg-gray-50 py-1.5 px-3 flex items-center justify-center gap-2 text-center">
+                  <span className="font-noto-bengali text-sm text-gray-700">সারা বছরের গড় উপস্থিতি</span>
+                  <span className="font-noto-bengali text-sm" style={{ color: '#CF278D', fontWeight: 700 }}>
+                    {toBengaliNumber(studentData.attendance.percent)}%
+                  </span>
+                </div>
+              </div>
+              <div className="w-full flex justify-around bg-gray-50 rounded-2xl py-3 px-4 mt-1">
+                {summaryStats.map((stat) => (
+                  <div key={stat.label} className="flex flex-col items-center gap-1">
+                    <span className={`${stat.color} font-bold text-lg`}>
+                      {toBengaliNumber(stat.value)}
+                    </span>
+                    <span className="text-gray-500 font-noto-bengali text-xs">{stat.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-gray-600 text-sm text-center font-noto-bengali mt-3">
+                {texts.footer}
+              </p>
+            </>
+          ) : (
+            <>
           <div className="flex flex-col items-center my-2 relative" style={{ height: size, width: size }}>
             <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
               <circle
@@ -115,7 +239,6 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
               <span className="text-shikho-blue font-noto-bengali text-base" style={{ marginTop: 0 }}>{'উপস্থিতি'}</span>
             </div>
           </div>
-          {/* Stats */}
           <div className="w-full flex justify-around bg-gray-50 rounded-xl py-2 mt-1 mb-1">
             <div className="flex flex-col items-center liveclass-stats-col">
               <span className="text-shikho-blue font-bold text-lg">{toBengaliNumber(studentData.attendance.total)}</span>
@@ -131,7 +254,6 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
             </div>
             
           </div>
-          {/* Footer with delta-based message */}
           {studentData.lastQuarter && (() => {
             const currentPct = studentData.attendance.percent;
             const lastPct = studentData.lastQuarter.attendance.percent;
@@ -155,6 +277,8 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
               </p>
             );
           })()}
+            </>
+          )}
           {/* Navigation */}
           {!hideUI && (
             <>

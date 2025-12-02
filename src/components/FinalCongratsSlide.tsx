@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Confetti } from './Confetti';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
@@ -7,8 +8,10 @@ import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
 import { toBengaliOrdinal, getRankFromEngagementLevel } from '../utils/rank';
+import { useStudentDataContext } from '../context/StudentDataContext';
 import type { StudentData } from '../utils/mockStudents';
 import type { EngagementLevel } from '../utils/studentTexts';
+import type { ReportMode } from '../context/StudentDataContext';
 
 interface FinalCongratsSlideProps {
   studentData: StudentData;
@@ -55,7 +58,12 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
     setIsVisible(true);
   }, []);
 
-  const texts = getStudentTexts('finalCongrats', studentData.engagementLevel as EngagementLevel);
+  const { reportMode: contextReportMode } = useStudentDataContext();
+  const { mode } = useParams<{ mode?: string }>();
+  
+  // Compute reportMode directly from URL parameter for immediate use
+  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  const texts = getStudentTexts('finalCongrats', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('finalCongrats', studentData.engagementLevel as EngagementLevel);
 
   return (
@@ -96,7 +104,7 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
           </div>
           {/* Header */}
           <div className="text-center mb-1 mt-1">
-            <h1 className="text-shikho-blue text-xl font-noto-bengali mb-2 font-bold">{texts.header}</h1>
+            <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-xl'} mb-2`}>{texts.header}</h1>
             <p className="text-gray-600 font-noto-bengali text-base">
             
             </p>

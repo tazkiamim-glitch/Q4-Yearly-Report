@@ -1,12 +1,15 @@
 import { useRef, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { FallbackModal } from './FallbackModal';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
+import { useStudentDataContext } from '../context/StudentDataContext';
 import type { EngagementLevel } from '../utils/studentTexts';
 import type { StudentData } from '../utils/mockStudents';
+import type { ReportMode } from '../context/StudentDataContext';
 
 
 interface LiveTestSlideProps {
@@ -24,8 +27,13 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
   const completedTarget = Math.round((liveTests.completed/liveTests.total)*100);
   const avgTimeTarget = 70; // static as before
   const avgScoreTarget = liveTests.avgScore;
+  const { reportMode: contextReportMode } = useStudentDataContext();
+  const { mode } = useParams<{ mode?: string }>();
 
-  const texts = getStudentTexts('liveTest', studentData.engagementLevel as EngagementLevel);
+  // Compute reportMode directly from URL parameter for immediate use
+  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+
+  const texts = getStudentTexts('liveTest', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('liveTest', studentData.engagementLevel as EngagementLevel);
 
   useEffect(() => {
@@ -133,7 +141,7 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
               <span className="text-gray-600 font-noto-bengali text-xs">{texts.left}</span>
             </div>
           </div>
-          <p className="text-gray-600 font-noto-bengali text-sm mt-4 text-center">
+          <p className={`text-gray-600 font-noto-bengali text-center ${reportMode === 'YEARLY' ? 'text-sm font-medium' : 'text-sm'} mt-4`}>
           {texts.footer}
           </p>
           {/* Navigation */}

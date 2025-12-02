@@ -1,12 +1,15 @@
 import { useRef, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { FallbackModal } from './FallbackModal';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
+import { useStudentDataContext } from '../context/StudentDataContext';
 import type { EngagementLevel } from '../utils/studentTexts';
 import type { StudentData } from '../utils/mockStudents';
+import type { ReportMode } from '../context/StudentDataContext';
 
 interface StreakTrackerSlideProps {
   studentData: StudentData;
@@ -53,7 +56,12 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
     return () => clearTimeout(timeout);
   }, [streak, boxes.length]);
 
-  const texts = getStudentTexts('streakTracker', studentData.engagementLevel as EngagementLevel);
+  const { reportMode: contextReportMode } = useStudentDataContext();
+  const { mode } = useParams<{ mode?: string }>();
+  
+  // Compute reportMode directly from URL parameter for immediate use
+  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  const texts = getStudentTexts('streakTracker', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('streakTracker', studentData.engagementLevel as EngagementLevel);
 
   return (
@@ -83,7 +91,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
         <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
           {/* Header */}
           <div className="text-center mb-1 mt-1">
-            <h1 className="text-shikho-blue text-lg font-noto-bengali font-bold">{texts.header}</h1>
+            <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'}`}>{texts.header}</h1>
           </div>
           {/* Streak Boxes */}
           <div className="flex justify-center gap-2 my-4">
@@ -93,7 +101,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
                 return (
                   <span
                     key={num}
-                    className="w-8 h-8 flex items-center justify-center rounded-md font-bold text-lg font-noto-bengali bg-gray-200 text-gray-400 border border-gray-300 streak-box-text"
+                    className="min-w-[40px] h-8 flex items-center justify-center px-2 rounded-md font-bold text-lg font-noto-bengali bg-gray-200 text-gray-400 border border-gray-300 streak-box-text"
                   >
                     <span className="streak-box-number">{toBengaliNumber(num)}</span>
                   </span>
@@ -104,7 +112,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
               return (
                 <span
                   key={num}
-                  className={`w-8 h-8 flex items-center justify-center rounded-md font-bold text-lg font-noto-bengali transition-colors duration-300 streak-box-text
+                  className={`min-w-[40px] h-8 flex items-center justify-center px-2 rounded-md font-bold text-lg font-noto-bengali transition-colors duration-300 streak-box-text
                     ${isLast
                       ? 'bg-gray-200 text-gray-400 border border-gray-300'
                       : idx < activeBoxes
@@ -127,13 +135,13 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
           {/* Streak Stat */}
           <div className="w-full flex flex-col items-center bg-gray-50 rounded-xl py-6 mt-1 mb-1">
             <div className="flex flex-col items-center">
+              <span className="text-sm text-gray-500 font-noto-bengali font-medium mb-1">সর্বোচ্চ স্ট্রিক</span>
               <span className="text-5xl fire-emoji" role="img" aria-label="fire">🔥</span>
-              <span className="text-gray-600 font-noto-bengali text-base mt-2">{texts.stat}</span>
-              <span className="text-shikho-pink font-bold text-3xl mt-1 streak-stats-text">{toBengaliNumber(streak)} দিন</span>
+              <span className="text-shikho-pink font-bold text-3xl mt-2 streak-stats-text">{toBengaliNumber(streak)} দিন</span>
             </div>
           </div>
           {/* Footer with delta-based message */}
-          {studentData.lastQuarter && (() => {
+          {reportMode === 'QUARTERLY' && studentData.lastQuarter ? (() => {
             const currentDays = studentData.streak.longest;
             const lastDays = studentData.lastQuarter.streak.longest;
             const deltaDays = currentDays - lastDays;
@@ -159,7 +167,13 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
                 </p>
               </div>
             );
-          })()}
+          })() : (
+            <div className="mt-3 md:mt-4 flex justify-center">
+              <p className={`text-gray-600 text-center font-medium font-noto-bengali ${reportMode === 'YEARLY' ? 'text-sm' : 'text-[14px] md:text-[15px]'}`}>
+                {texts.footer}
+              </p>
+            </div>
+          )}
           {/* Navigation */}
           {!hideUI && (
             <>

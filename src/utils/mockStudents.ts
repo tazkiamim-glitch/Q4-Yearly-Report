@@ -31,6 +31,19 @@ export interface StudentData {
     november: string;
     december: string;
   };
+  yearlyAttendance?: {
+    q1: number;
+    q2: number;
+    q3: number;
+    q4: number;
+  };
+  yearlyStudyTime?: {
+    q1: string;
+    q2: string;
+    q3: string;
+    q4: string;
+    totalHours: string;
+  };
   finalScore: number;
   dayOfWeek: number[]; // [Sunday, Monday, ..., Saturday] percentages
   lastQuarter?: {
@@ -61,9 +74,10 @@ export const students: StudentData[] = [
     attendance: { percent: 95, total: 40, attended: 38, missed: 2 },
     quiz: { completed: 40, correctAnswers: 110, totalQuestions: 130 },
     liveTests: { total: 12, completed: 12, avgScore: 85, avgTime: '38 mins' },
-    streak: { longest: 15 },
+    streak: { longest: 200 },
     studyTime: { total: '60:00', october: '18:00', november: '20:00', december: '22:00' },
     finalScore: 92,
+    yearlyAttendance: { q1: 88, q2: 92, q3: 96, q4: 95 },
     dayOfWeek: [12.34, 13.45, 14.56, 10.12, 18.43, 16.10, 15.00],
     lastQuarter: {
       attendance: { percent: 88 },
@@ -86,6 +100,7 @@ export const students: StudentData[] = [
     streak: { longest: 6 },
     studyTime: { total: '48:30', october: '12:45', november: '15:30', december: '20:05' },
     finalScore: 79,
+    yearlyAttendance: { q1: 78, q2: 82, q3: 85, q4: 83 },
     dayOfWeek: [10.00, 12.00, 28.00, 5.00, 18.00, 17.00, 10.00],
     lastQuarter: {
       attendance: { percent: 83 },
@@ -108,6 +123,7 @@ export const students: StudentData[] = [
     streak: { longest: 2 },
     studyTime: { total: '20:15', october: '5:00', november: '7:15', december: '8:00' },
     finalScore: 50,
+    yearlyAttendance: { q1: 55, q2: 60, q3: 62, q4: 60 },
     dayOfWeek: [8.00, 12.00, 15.00, 20.00, 18.00, 17.00, 10.00],
     lastQuarter: {
       attendance: { percent: 65 },

@@ -177,7 +177,166 @@ const TEXTS: Record<EngagementLevel, Record<SlideKey, SlideTexts>> = {
   low: LOW_ENGAGEMENT_TEXTS,
 };
 
-export function getStudentTexts(slide: SlideKey, engagementLevel: EngagementLevel): SlideTexts {
+export const YEARLY_ENGAGEMENT_TEXTS: Record<EngagementLevel, Record<SlideKey, SlideTexts>> = {
+  high: {
+    welcome: {
+      header: '২০২৫-এ সময়ের পাতায় তোমার জার্নি ⏳',
+      footer: 'শিখোর ইতিহাসে তুমি এক উজ্জ্বল নক্ষত্র! 🌟',
+    },
+    liveClass: {
+      header: 'সারা বছর ক্লাসে ছিলে একদম রেগুলার! 🎒',
+      footer: 'এই ডিসিপ্লিনই তোমাকে সবার চেয়ে এগিয়ে রাখবে! 🔥',
+    },
+    liveTest: {
+      header: 'মেধার প্রমাণ দিয়েছ বারবার, তুমিই চ্যাম্পিয়ন! 🧠',
+      completed: HIGH_ENGAGEMENT_TEXTS.liveTest.completed,
+      avgTime: HIGH_ENGAGEMENT_TEXTS.liveTest.avgTime,
+      avgScore: HIGH_ENGAGEMENT_TEXTS.liveTest.avgScore,
+      total: HIGH_ENGAGEMENT_TEXTS.liveTest.total,
+      done: HIGH_ENGAGEMENT_TEXTS.liveTest.done,
+      left: HIGH_ENGAGEMENT_TEXTS.liveTest.left,
+      footer: 'রেজাল্ট শিটে আগুন ধরিয়েছ, এভাবেই এগিয়ে যাও! 🚒',
+    },
+    dayOfWeek: {
+      header: 'এই দিনেই তুমি ছিলে সবচেয়ে অন ফায়ার! 🔥',
+      footer: 'সারা বছর এই ফোকাস ধরে রাখায় তুমিই সেরা!',
+    },
+    streakTracker: {
+      header: 'ধারাবাহিকতার অনন্য উদাহরণ! 👑',
+      footer: '২০২৬-এ নিজের সেরা রেকর্ডটি গড়ার সময় এখন! 🚀',
+    },
+    studyTime: {
+      header: 'তোমার শিখো-যাত্রা - এক ইতিহাস! ⏳',
+      footer: 'তুমি শুধু পড়োনি, নিজেকে গড়ে তুলেছো! 💎',
+    },
+    finalCongrats: {
+      header: 'অভিনন্দন! তুমিই ২০২৫-এর সুপারস্টার! 🌟',
+      scoreLabel: 'তোমার ১২ মাসের স্কোর',
+      nextTerm: '২০২৬ সাল শুরু করো!',
+      footer: '২০২৬ সালটাও হোক তোমার বিজয়ের বছর! 🎉',
+    },
+    quizPerformance: {
+      header: HIGH_ENGAGEMENT_TEXTS.quizPerformance.header,
+      avg: HIGH_ENGAGEMENT_TEXTS.quizPerformance.avg,
+      correct: HIGH_ENGAGEMENT_TEXTS.quizPerformance.correct,
+      total: HIGH_ENGAGEMENT_TEXTS.quizPerformance.total,
+      medal: HIGH_ENGAGEMENT_TEXTS.quizPerformance.medal,
+    },
+    comparison: {
+      header: HIGH_ENGAGEMENT_TEXTS.comparison.header,
+      subtitle: HIGH_ENGAGEMENT_TEXTS.comparison.subtitle,
+    },
+  },
+  moderate: {
+    welcome: {
+      header: '২০২৫-এ সময়ের পাতায় তোমার জার্নি ⏳',
+      footer: 'তোমার চেষ্টা এবং লেগে থাকাই আসল শক্তি! 💪',
+    },
+    liveClass: {
+      header: 'ক্লাসে তোমার উপস্থিতি ছিল চোখে পড়ার মতো! 👀',
+      footer: 'আরেকটু রেগুলার হলেই তুমি গেমচেঞ্জার! ✨',
+    },
+    liveTest: {
+      header: 'লড়াইটা চালিয়ে গেছো দারুণভাবে! ⚔️',
+      completed: MID_ENGAGEMENT_TEXTS.liveTest.completed,
+      avgTime: MID_ENGAGEMENT_TEXTS.liveTest.avgTime,
+      avgScore: MID_ENGAGEMENT_TEXTS.liveTest.avgScore,
+      total: MID_ENGAGEMENT_TEXTS.liveTest.total,
+      done: MID_ENGAGEMENT_TEXTS.liveTest.done,
+      left: MID_ENGAGEMENT_TEXTS.liveTest.left,
+      footer: 'ভুলগুলো শুধরে নিলেই সামনে অপেক্ষা করছে টপ র‍্যাংক! 📈',
+    },
+    dayOfWeek: {
+      header: 'সপ্তাহের এই দিনটা ছিল শুধুই তোমার! 📅',
+      footer: 'বাকি দিনগুলোতেও এমন জোশ চাই!',
+    },
+    streakTracker: {
+      header: 'বছরের বড় একটা সময় ছিলে আমাদের সাথে! 🤝',
+      footer: 'মাঝের গ্যাপগুলো পূরণ হলেই তুমি অপ্রতিরোধ্য!',
+    },
+    studyTime: {
+      header: 'পড়াশোনায় ভালোই সময় দিয়েছ বস! ⏰',
+      footer: '২০২৬ সালে এই সময়টা দ্বিগুণ হবে, কথা দাও? 🤞',
+    },
+    finalCongrats: {
+      header: '২০২৫ ছিল তোমার ভিত্তি গড়ার বছর! 🧱',
+      scoreLabel: 'তোমার ১২ মাসের স্কোর',
+      nextTerm: '২০২৬ সাল শুরু করো!',
+      footer: 'নতুন বছরে নতুন উদ্যমে শুরু হোক যাত্রা! 🚀',
+    },
+    quizPerformance: {
+      header: MID_ENGAGEMENT_TEXTS.quizPerformance.header,
+      avg: MID_ENGAGEMENT_TEXTS.quizPerformance.avg,
+      correct: MID_ENGAGEMENT_TEXTS.quizPerformance.correct,
+      total: MID_ENGAGEMENT_TEXTS.quizPerformance.total,
+      medal: MID_ENGAGEMENT_TEXTS.quizPerformance.medal,
+    },
+    comparison: {
+      header: MID_ENGAGEMENT_TEXTS.comparison.header,
+      subtitle: MID_ENGAGEMENT_TEXTS.comparison.subtitle,
+    },
+  },
+  low: {
+    welcome: {
+      header: '২০২৫-এ সময়ের পাতায় তোমার জার্নি ⏳',
+      footer: 'যা হয়েছে তা অভিজ্ঞতা, সামনে হবে জয়! 🚀',
+    },
+    liveClass: {
+      header: 'ক্লাসে তোমার আসা-যাওয়াই ছিল পরিবর্তনের শুরু! 👣',
+      footer: 'নতুন বছরে ক্লাসরুম হোক তোমার আড্ডাখানা! 🏫',
+    },
+    liveTest: {
+      header: 'পরীক্ষার ভীতি কাটিয়েছ, এটাই বড় জয়! 🛡️',
+      completed: LOW_ENGAGEMENT_TEXTS.liveTest.completed,
+      avgTime: LOW_ENGAGEMENT_TEXTS.liveTest.avgTime,
+      avgScore: LOW_ENGAGEMENT_TEXTS.liveTest.avgScore,
+      total: LOW_ENGAGEMENT_TEXTS.liveTest.total,
+      done: LOW_ENGAGEMENT_TEXTS.liveTest.done,
+      left: LOW_ENGAGEMENT_TEXTS.liveTest.left,
+      footer: 'নেক্সট ইয়ারে মার্কস হবে আকাশছোঁয়া! 🎯',
+    },
+    dayOfWeek: {
+      header: 'এই দিনে তোমার এনার্জি ছিল সেরা! ⚡',
+      footer: 'এই রুটিনটা একটু ঘষামাজা করলেই হবে জাদু!',
+    },
+    streakTracker: {
+      header: 'মাঝে মাঝে উঁকি দিয়েছ, সেটাও কম কী! 👋',
+      footer: 'দিনগুলোকে মাসে আর মাসগুলোকে বছরে বদলাতে হবে!',
+    },
+    studyTime: {
+      header: 'সময় অল্প দিলেও, শুরুটা তো হলো! 🐢',
+      footer: 'নিজের ওপর বিশ্বাস রাখো—সুদিন আসবেই! ☀️',
+    },
+    finalCongrats: {
+      header: '২০২৬ হতে যাচ্ছে তোমার কামব্যাক ইয়ার! 🥊',
+      scoreLabel: 'তোমার ১২ মাসের স্কোর',
+      nextTerm: '২০২৬ সাল শুরু করো!',
+      footer: 'চলো নতুন বছরে নতুন রেকর্ড গড়ি! 🤝',
+    },
+    quizPerformance: {
+      header: LOW_ENGAGEMENT_TEXTS.quizPerformance.header,
+      avg: LOW_ENGAGEMENT_TEXTS.quizPerformance.avg,
+      correct: LOW_ENGAGEMENT_TEXTS.quizPerformance.correct,
+      total: LOW_ENGAGEMENT_TEXTS.quizPerformance.total,
+      medal: LOW_ENGAGEMENT_TEXTS.quizPerformance.medal,
+    },
+    comparison: {
+      header: LOW_ENGAGEMENT_TEXTS.comparison.header,
+      subtitle: LOW_ENGAGEMENT_TEXTS.comparison.subtitle,
+    },
+  },
+};
+
+import type { ReportMode } from '../context/StudentDataContext';
+
+export function getStudentTexts(
+  slide: SlideKey,
+  engagementLevel: EngagementLevel,
+  reportType: ReportMode = 'QUARTERLY'
+): SlideTexts {
+  if (reportType === 'YEARLY') {
+    return YEARLY_ENGAGEMENT_TEXTS[engagementLevel][slide];
+  }
   return TEXTS[engagementLevel][slide];
 }
 

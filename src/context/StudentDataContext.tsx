@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, type ReactNode } from 'reac
 import type { StudentData } from '../utils/mockStudents';
 import { useStudentData } from '../hooks/useStudentData';
 
+export type ReportMode = 'QUARTERLY' | 'YEARLY';
+
 interface StudentDataContextType {
   studentData: StudentData | null;
   loading: boolean;
@@ -10,6 +12,8 @@ interface StudentDataContextType {
   setStudentIds: (studentId: string, academicProgramId: string) => void;
   currentStudentId: string | null;
   currentAcademicProgramId: string | null;
+  reportMode: ReportMode;
+  setReportMode: (mode: ReportMode) => void;
 }
 
 const StudentDataContext = createContext<StudentDataContextType | undefined>(undefined);
@@ -21,6 +25,7 @@ interface StudentDataProviderProps {
 export const StudentDataProvider: React.FC<StudentDataProviderProps> = ({ children }) => {
   const [currentStudentId, setCurrentStudentId] = useState<string | null>(null);
   const [currentAcademicProgramId, setCurrentAcademicProgramId] = useState<string | null>(null);
+  const [reportMode, setReportMode] = useState<ReportMode>('QUARTERLY');
   const { studentData, loading, error, refetch } = useStudentData(currentStudentId || '', currentAcademicProgramId || '');
 
   const setStudentIds = (studentId: string, academicProgramId: string) => {
@@ -40,6 +45,8 @@ export const StudentDataProvider: React.FC<StudentDataProviderProps> = ({ childr
         setStudentIds,
         currentStudentId,
         currentAcademicProgramId,
+        reportMode,
+        setReportMode,
       }}
     >
       {children}

@@ -1,12 +1,15 @@
 import { useRef, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { FallbackModal } from './FallbackModal';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts, BENGALI_DAYS } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
+import { useStudentDataContext } from '../context/StudentDataContext';
 import type { EngagementLevel } from '../utils/studentTexts';
 import type { StudentData } from '../utils/mockStudents';
+import type { ReportMode } from '../context/StudentDataContext';
 import { FaCalendarCheck } from 'react-icons/fa';
 
 interface DayOfWeekSlideProps {
@@ -26,7 +29,12 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
   const [isVisible, setIsVisible] = useState(false);
   const dayPercents = studentData.dayOfWeek;
   const maxIdx = dayPercents.indexOf(Math.max(...dayPercents));
-  const texts = getStudentTexts('dayOfWeek', studentData.engagementLevel as EngagementLevel);
+  const { reportMode: contextReportMode } = useStudentDataContext();
+  const { mode } = useParams<{ mode?: string }>();
+  
+  // Compute reportMode directly from URL parameter for immediate use
+  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  const texts = getStudentTexts('dayOfWeek', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('dayOfWeek', studentData.engagementLevel as EngagementLevel);
 
   // Calculate proportional bar heights
@@ -107,7 +115,7 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
           className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-6 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}
         >
           {/* Header */}
-          <h2 className="text-shikho-blue text-lg font-noto-bengali mb-2 font-bold text-center">{texts.header}</h2>
+          <h2 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'} mb-2`}>{texts.header}</h2>
 
           {/* Bar Chart (Flexbox) */}
           <div className="mb-8 w-full flex items-center justify-center" style={{ minHeight: 180 }}>
@@ -154,7 +162,7 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
               <FaCalendarCheck className="text-sm text-shikho-pink" />
             </div>
             <p className="text-xl font-bold mb-2 text-shikho-pink font-noto-bengali dayofweek-day-label">{BENGALI_DAYS[maxIdx]}</p>
-            <p className="text-gray-600 text-xs font-noto-bengali">{texts.footer}</p>
+            <p className={`text-gray-600 text-center font-medium font-noto-bengali ${reportMode === 'YEARLY' ? 'text-sm' : 'text-xs'}`}>{texts.footer}</p>
           </div>
         </div>
         {/* Navigation */}

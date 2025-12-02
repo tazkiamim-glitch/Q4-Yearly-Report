@@ -9,8 +9,8 @@ interface RouteGuardProps {
 }
 
 export const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
-  const { studentId, academicProgramId } = useParams<{ studentId: string; academicProgramId: string }>();
-  const { studentData, loading, error, refetch, setStudentIds, currentStudentId, currentAcademicProgramId } = useStudentDataContext();
+  const { studentId, academicProgramId, mode } = useParams<{ studentId: string; academicProgramId: string; mode?: string }>();
+  const { studentData, loading, error, refetch, setStudentIds, currentStudentId, currentAcademicProgramId, setReportMode } = useStudentDataContext();
 
   // Set the student ID and academic program ID if they're different from current
   React.useEffect(() => {
@@ -21,6 +21,13 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
       setStudentIds(studentId, academicProgramId);
     }
   }, [studentId, academicProgramId, currentStudentId, currentAcademicProgramId, setStudentIds]);
+
+  React.useEffect(() => {
+    if (mode) {
+      const normalized = mode.toLowerCase() === 'yearly' ? 'YEARLY' : 'QUARTERLY';
+      setReportMode(normalized);
+    }
+  }, [mode, setReportMode]);
 
   // Show loading only if we don't have data yet
   if (loading && !studentData) {

@@ -159,13 +159,13 @@ export const TestPage = () => {
     
     // Pre-load the student data before navigating
     setStudentIds(id, academicProgramId);
-    navigate(`/${id}/${academicProgramId}`);
+    navigate(`/${id}/${academicProgramId}/select-mode`);
   }
 
   const handleStudentSelect = (studentId: string, academicProgramId: string) => {
     // Pre-load the student data before navigating
     setStudentIds(studentId, academicProgramId);
-    navigate(`/${studentId}/${academicProgramId}`);
+    navigate(`/${studentId}/${academicProgramId}/select-mode`);
   };
 
   return (

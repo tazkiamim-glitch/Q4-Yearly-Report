@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Confetti } from './Confetti';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
@@ -6,7 +7,9 @@ import { FallbackModal } from './FallbackModal';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
+import { useStudentDataContext } from '../context/StudentDataContext';
 import type { EngagementLevel } from '../utils/studentTexts';
+import type { ReportMode } from '../context/StudentDataContext';
 
 interface WelcomeSlideProps {
   studentData: {
@@ -40,8 +43,13 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
     hideUI,
   } = useShare({});
   const [isVisible, setIsVisible] = useState(false);
+  const { reportMode: contextReportMode } = useStudentDataContext();
+  const { mode } = useParams<{ mode?: string }>();
 
-  const texts = getStudentTexts('welcome', studentData.engagementLevel as EngagementLevel);
+  // Compute reportMode directly from URL parameter for immediate use
+  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+
+  const texts = getStudentTexts('welcome', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('welcome', studentData.engagementLevel as EngagementLevel);
 
   useEffect(() => {
@@ -77,7 +85,13 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
         {/* Oval card */}
         <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
           {/* Header */}
-          
+          {texts.header && (
+            <div className="text-center mb-1 mt-1 px-2">
+              <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'} mb-2`}>
+                {texts.header}
+              </h1>
+            </div>
+          )}
 
           {/* Profile Section */}
           <div className="flex flex-col items-center mb-2">
@@ -94,25 +108,28 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
           {/* Horizontal Stats Row */}
           <div className="w-full flex justify-between items-stretch gap-4 mb-1 mt-1">
             <div className="flex-1 min-w-0 bg-white rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border border-[#F9D7EC] bg-[#FFF7FB]">
-              <p className="text-2xl font-bold text-shikho-pink mb-1">
-                {toBengaliNumber(studentData.attendance.percent)}%
-              </p>
+              <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-1">
+                <span className="text-2xl font-bold text-shikho-pink">{toBengaliNumber(studentData.attendance.percent)}</span>
+                <span className="text-2xl font-bold text-shikho-pink">%</span>
+              </div>
               <p className="text-gray-600 font-noto-bengali text-sm">ক্লাস উপস্থিতি</p>
             </div>
             <div className="flex-1 min-w-0 bg-white rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border border-[#D6DBF7] bg-[#F7F8FF]">
-              <p className="text-2xl font-bold text-shikho-blue mb-1">
-                {toBengaliNumber(quizPercentage)}%
-              </p>
+              <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-1">
+                <span className="text-2xl font-bold text-shikho-blue">{toBengaliNumber(quizPercentage)}</span>
+                <span className="text-2xl font-bold text-shikho-blue">%</span>
+              </div>
               <p className="text-gray-600 font-noto-bengali text-sm">কুইজ স্কোর</p>
             </div>
             <div className="flex-1 min-w-0 bg-white rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border border-[#FFE6A7] bg-[#FFFCF5]">
-              <p className="text-2xl font-bold text-shikho-yellow mb-0">
-                {toBengaliNumber(studentData.streak.longest)} <span className="text-2xl align-middle">দিন</span>
-              </p>
+              <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-0">
+                <span className="text-2xl font-bold text-shikho-yellow">{toBengaliNumber(studentData.streak.longest)}</span>
+                <span className="text-2xl font-bold text-shikho-yellow">দিন</span>
+              </div>
               <p className="text-gray-600 font-noto-bengali text-sm mt-1">সর্বোচ্চ স্ট্রিক</p>
             </div>
           </div>
-          <p className="text-gray-600 font-noto-bengali text-sm mt-2 text-center">
+          <p className={`text-gray-600 text-center font-medium font-noto-bengali ${reportMode === 'YEARLY' ? 'text-sm' : 'text-sm'} mt-2`}>
           {texts.footer}
           </p>
         </div>
