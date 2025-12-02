@@ -8,7 +8,7 @@ interface ReportSelectionScreenProps {
 const cardVariants = {
   initial: { opacity: 0, y: 40, scale: 0.96 },
   animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: 'easeOut' as const } },
-  whileHover: { y: -6, scale: 1.02, transition: { type: 'spring', stiffness: 300, damping: 20 } },
+  whileHover: { y: -6, scale: 1.02, transition: { type: 'spring' as const, stiffness: 300, damping: 20 } },
 };
 
 export const ReportSelectionScreen = ({ onSelectMode }: ReportSelectionScreenProps) => {

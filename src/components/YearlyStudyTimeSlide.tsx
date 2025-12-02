@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useShare } from '../hooks/useShare';
@@ -37,16 +36,6 @@ const defaultData: YearlyStudyTimeData = {
 
 export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: YearlyStudyTimeSlideProps) => {
   const resolvedData = data ?? studentData.yearlyStudyTime ?? defaultData;
-  const parsed = useMemo(() => {
-    const sanitize = (value: string) => parseFloat(value.replace(/[^\d.]/g, '')) || 0;
-    return {
-      q1: sanitize(resolvedData.q1),
-      q2: sanitize(resolvedData.q2),
-      q3: sanitize(resolvedData.q3),
-      q4: sanitize(resolvedData.q4),
-      total: sanitize(resolvedData.totalHours),
-    };
-  }, [resolvedData]);
 
   const gradientClass = getGradientClass('studyTime', studentData.engagementLevel as EngagementLevel);
   const { reportMode: contextReportMode } = useStudentDataContext();
