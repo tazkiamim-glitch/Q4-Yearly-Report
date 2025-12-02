@@ -35,33 +35,6 @@ const defaultData: YearlyStudyTimeData = {
   totalHours: '205h',
 };
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const barVariants = {
-  hidden: {
-    scaleY: 0,
-    opacity: 0,
-    originY: 1,
-  },
-  visible: (delayIndex: number) => ({
-    scaleY: 1,
-    opacity: 1,
-    transition: {
-      duration: 0.9,
-      ease: [0.19, 1, 0.22, 1],
-      delay: delayIndex * 0.05,
-    },
-  }),
-};
-
 export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: YearlyStudyTimeSlideProps) => {
   const resolvedData = data ?? studentData.yearlyStudyTime ?? defaultData;
   const parsed = useMemo(() => {
@@ -75,7 +48,6 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
     };
   }, [resolvedData]);
 
-  const maxValue = Math.max(parsed.q1, parsed.q2, parsed.q3, parsed.q4, 1);
   const gradientClass = getGradientClass('studyTime', studentData.engagementLevel as EngagementLevel);
   const { reportMode: contextReportMode } = useStudentDataContext();
   const { mode } = useParams<{ mode?: string }>();
