@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useShare } from '../hooks/useShare';
 import { FallbackModal } from './FallbackModal';
 import { ArrowButton } from './ArrowButton';
-import { getGradientClass } from '../utils/gradientManager';
 import { getStudentTexts } from '../utils/studentTexts';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { useStudentDataContext } from '../context/StudentDataContext';
@@ -37,7 +36,6 @@ const defaultData: YearlyStudyTimeData = {
 export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: YearlyStudyTimeSlideProps) => {
   const resolvedData = data ?? studentData.yearlyStudyTime ?? defaultData;
 
-  const gradientClass = getGradientClass('studyTime', studentData.engagementLevel as EngagementLevel);
   const { reportMode: contextReportMode } = useStudentDataContext();
   const { mode } = useParams<{ mode?: string }>();
   const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;

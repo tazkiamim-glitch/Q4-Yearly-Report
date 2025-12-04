@@ -54,10 +54,7 @@ export const YearlySubjectPodiumSlide = ({ studentData, onPrev, onNext }: Yearly
 	function getBnPercent(score: number) {
 		return `${toBengaliNumber(score)}%`;
 	}
-
-	function getBnRank(rank: number) {
-		return toBengaliNumber(rank);
-	}
+	
 
 	return (
 		<>
