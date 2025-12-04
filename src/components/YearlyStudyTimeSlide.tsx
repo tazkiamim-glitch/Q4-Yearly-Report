@@ -63,7 +63,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
   const ROAD_PATH_D = 'M -10 100 C 60 100, 80 40, 160 40 S 260 100, 350 100';
 
   return (
-    <div className={`slide-container flex flex-col items-center justify-center px-2 relative${hideUI ? ' sharing-mode' : ''}`}>
+    <div className={`slide-container flex flex-col items-center justify-center px-2 relative final-yearly${hideUI ? ' sharing-mode' : ''}`}>
       <img
         src="/shikho_logo.png"
         alt="Shikho Logo"
@@ -71,24 +71,29 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
         style={{ top: 30 }}
       />
 
-      <div className={gradientClass} />
+      <div className="gradient-bg-final-yearly" />
+      <div className="pointer-events-none fixed inset-0 bg-white/45" />
 
       {!hideUI && (
         <div className="fixed-dot-indicator">
-          {[...Array(7)].map((_, i) => (
-            <span key={i} className={`w-2 h-2 rounded-full ${i === 5 ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`} />
-          ))}
+          {(() => {
+            const dotCount = reportMode === 'YEARLY' ? 8 : 7;
+            const activeIndex = 6;
+            return [...Array(dotCount)].map((_, i) => (
+              <span key={i} className={`w-2 h-2 rounded-full ${i === activeIndex ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`} />
+            ));
+          })()}
         </div>
       )}
 
-      <div className="card-oval w-[55vw] max-w-[420px] flex flex-col items-center p-4 mb-6 fade-in-slide visible overflow-visible">
+      <div className="card-oval w-[55vw] max-w-[420px] flex flex-col items-center px-4 card-oval-compact mb-6 fade-in-slide visible overflow-visible bg-gradient-to-b from-white to-[#EAF2FF]">
         <div className="text-center mb-0 px-3">
           <h1 className="text-[#354894] text-xl font-bold text-center font-noto-bengali">
             {texts.header}
           </h1>
         </div>
         {/* Roadmap Visualization - Horizontal */}
-        <div className="relative w-full px-2 mt-16" style={{ height: 180 }}>
+        <div className="relative w-full px-2 mt-12" style={{ height: 180 }}>
           <motion.svg
             width="100%"
             height="100%"
@@ -278,7 +283,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
         </div>
 
         {/* Total hours & footer inside card */}
-        <div className="w-full px-3 mt-4 mb-0">
+        <div className="w-full px-3 mt-3 mb-0">
           <div className="rounded-xl bg-gray-50 p-2 sm:p-2.5 text-center">
             <p className="text-xl sm:text-2xl font-semibold text-shikho-blue">{totalHoursBn}</p>
             <p className="text-slate-600 mt-1 font-noto-bengali text-sm">সারা বছরের অর্জন</p>
@@ -311,7 +316,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
       {!hideUI && (
         <div className="w-full flex justify-center z-30 mt-4">
           <button
-            className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+            className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
             onClick={handleShare}
             style={{ maxWidth: '90vw' }}
           >
@@ -321,7 +326,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
       )}
 
       <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
-        <p className="text-gray-500 font-noto-bengali text-sm">
+        <p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-500'}`}>
           <span className="font-semibold">{studentData.name}</span> • {studentData.class}
         </p>
       </div>

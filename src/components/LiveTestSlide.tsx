@@ -30,8 +30,14 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
   const { reportMode: contextReportMode } = useStudentDataContext();
   const { mode } = useParams<{ mode?: string }>();
 
-  // Compute reportMode directly from URL parameter for immediate use
-  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  // Compute reportMode from URL parameter if present; otherwise fall back to context
+  const normalizedMode = mode?.toLowerCase();
+  const reportMode: ReportMode =
+    normalizedMode === 'yearly'
+      ? 'YEARLY'
+      : normalizedMode === 'quarterly'
+        ? 'QUARTERLY'
+        : contextReportMode;
 
   const texts = getStudentTexts('liveTest', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('liveTest', studentData.engagementLevel as EngagementLevel);
@@ -68,7 +74,7 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
 
   return (
     <>
-      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${hideUI ? ' sharing-mode' : ''}`}>
+      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${reportMode === 'YEARLY' ? ' final-yearly' : ''}${hideUI ? ' sharing-mode' : ''}`}>
         {/* Shikho logo - positioned inside slide container to be captured in screenshot */}
         <img
           src="/shikho_logo.png"
@@ -77,8 +83,15 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
           style={{ top: 30 }}
         />
 
-        {/* Gradient background */}
-        <div className={gradientClass} />
+        {/* Background */}
+        {reportMode === 'YEARLY' ? (
+          <>
+            <div className="gradient-bg-final-yearly" />
+            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+          </>
+        ) : (
+          <div className={gradientClass} />
+        )}
         {/* Dot indicators */}
         {!hideUI && (
           <div className="fixed-dot-indicator">
@@ -91,14 +104,14 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
           </div>
         )}
         {/* Card */}
-        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
+        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
           {/* Header */}
           <div className="text-center mb-1 mt-1">
             <h1 className="text-shikho-blue text-lg font-noto-bengali mb-2 font-bold">{texts.header}</h1>
           </div>
           {/* Progress Bars */}
           <div className="w-full space-y-4 mb-2">
-            <div className="bg-gray-50 p-3 rounded-xl flex flex-col mb-0">
+            <div className={`${reportMode === 'YEARLY' ? 'bg-gray-50' : 'bg-white'} p-3 rounded-xl flex flex-col mb-0`}>
               <div className="flex justify-between mb-1">
                 <span className="text-shikho-blue font-noto-bengali text-sm livetest-bar-value">{texts.completed}</span>
                 <span className="text-shikho-blue font-noto-bengali text-sm font-bold livetest-bar-value">{toBengaliNumber(completedPercent)}%</span>
@@ -107,7 +120,7 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
                 <div className="h-3 bg-shikho-blue rounded-full transition-all duration-500" style={{ width: `${completedPercent}%` }} />
               </div>
             </div>
-            <div className="bg-gray-50 p-3 rounded-xl flex flex-col mb-0">
+            <div className={`${reportMode === 'YEARLY' ? 'bg-gray-50' : 'bg-white'} p-3 rounded-xl flex flex-col mb-0`}>
               <div className="flex justify-between mb-1">
                 <span className="text-shikho-pink font-noto-bengali text-sm livetest-bar-value">{texts.avgTime}</span>
                 <span className="text-shikho-pink font-noto-bengali text-sm font-bold livetest-bar-value">{avgTimeBn}</span>
@@ -116,7 +129,7 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
                 <div className="h-3 bg-shikho-pink rounded-full transition-all duration-500" style={{ width: `${avgTimePercent}%` }} />
               </div>
             </div>
-            <div className="bg-gray-50 p-3 rounded-xl flex flex-col mb-0">
+            <div className={`${reportMode === 'YEARLY' ? 'bg-gray-50' : 'bg-white'} p-3 rounded-xl flex flex-col mb-0`}>
               <div className="flex justify-between mb-1">
                 <span className="text-shikho-yellow font-noto-bengali text-sm livetest-bar-value">{texts.avgScore}</span>
                 <span className="text-shikho-yellow font-noto-bengali text-sm font-bold livetest-bengali-text livetest-bar-value">{toBengaliNumber(avgScorePercent)}%</span>
@@ -127,7 +140,7 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
             </div>
           </div>
           {/* Stats Row */}
-          <div className="w-full flex justify-around bg-gray-50 rounded-xl py-2 mt-1 mb-1">
+          <div className={`w-full flex justify-around ${reportMode === 'YEARLY' ? 'bg-gray-50' : 'bg-white'} rounded-xl py-2 mt-1 mb-1`}>
             <div className="flex flex-col items-center livetest-stats-col">
               <span className="text-shikho-blue font-bold text-lg">{toBengaliNumber(liveTests.total)}</span>
               <span className="text-gray-600 font-noto-bengali text-xs">{texts.total}</span>
@@ -166,7 +179,7 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
         {!hideUI && (
           <div className="w-full flex justify-center z-30 mt-4">
             <button
-              className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+              className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
               onClick={handleShare}
               style={{ maxWidth: '90vw' }}
             >
@@ -176,7 +189,7 @@ export const LiveTestSlide = ({ studentData, onPrev, onNext }: LiveTestSlideProp
         )}
         {/* Student name and class - visible in both normal and sharing modes */}
         <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
-          <p className="text-gray-500 font-noto-bengali text-sm">
+          <p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-500'}`}>
             <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
           </p>
         </div>

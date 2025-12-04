@@ -48,8 +48,14 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
   const { reportMode: contextReportMode } = useStudentDataContext();
   const { mode } = useParams<{ mode?: string }>();
   
-  // Compute reportMode directly from URL parameter for immediate use
-  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  // Compute reportMode from URL parameter if present; otherwise fall back to context
+  const normalizedMode = mode?.toLowerCase();
+  const reportMode: ReportMode =
+    normalizedMode === 'yearly'
+      ? 'YEARLY'
+      : normalizedMode === 'quarterly'
+        ? 'QUARTERLY'
+        : contextReportMode;
   const isYearlyReport = reportMode === 'YEARLY';
   const texts = getStudentTexts('liveClass', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('liveClass', studentData.engagementLevel as EngagementLevel);
@@ -102,7 +108,7 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
 
   return (
     <>
-      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${hideUI ? ' sharing-mode' : ''}`}>
+      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${isYearlyReport ? ' final-yearly' : ''}${hideUI ? ' sharing-mode' : ''}`}>
         {/* Shikho logo - positioned inside slide container to be captured in screenshot */}
         <img
           src="/shikho_logo.png"
@@ -111,8 +117,15 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
           style={{ top: 30 }}
         />
 
-        {/* Gradient background */}
-        <div className={gradientClass} />
+        {/* Background */}
+        {isYearlyReport ? (
+          <>
+            <div className="gradient-bg-final-yearly" />
+            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+          </>
+        ) : (
+          <div className={gradientClass} />
+        )}
         {/* Dot indicators */}
         {!hideUI && (
           <div className="fixed-dot-indicator">
@@ -127,7 +140,7 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
         {/* Card */}
         <div
           ref={cardRef}
-          className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center relative ${isYearlyReport ? 'py-2 px-3' : 'py-2 px-2'} mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}
+          className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center relative ${isYearlyReport ? 'py-2 px-3' : 'py-2 px-2'} mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${isYearlyReport ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}
         >
           {/* Header */}
           <div className="text-center mb-1 mt-1 px-2">
@@ -185,14 +198,14 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
               </div>
               {/* Full-width compact banner between chart and stats */}
               <div className="w-full px-2 mt-2 mb-1">
-                <div className="w-full rounded-xl bg-gray-50 py-1.5 px-3 flex items-center justify-center gap-2 text-center">
+                <div className={`w-full rounded-xl ${isYearlyReport ? 'bg-gray-50' : 'bg-white'} py-1.5 px-3 flex items-center justify-center gap-2 text-center`}>
                   <span className="font-noto-bengali text-sm text-gray-700">সারা বছরের গড় উপস্থিতি</span>
                   <span className="font-noto-bengali text-sm" style={{ color: '#CF278D', fontWeight: 700 }}>
                     {toBengaliNumber(studentData.attendance.percent)}%
                   </span>
                 </div>
               </div>
-              <div className="w-full flex justify-around bg-gray-50 rounded-2xl py-3 px-4 mt-1">
+              <div className={`w-full flex justify-around ${isYearlyReport ? 'bg-gray-50' : 'bg-white'} rounded-2xl py-3 px-4 mt-1`}>
                 {summaryStats.map((stat) => (
                   <div key={stat.label} className="flex flex-col items-center gap-1">
                     <span className={`${stat.color} font-bold text-lg`}>
@@ -239,7 +252,7 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
               <span className="text-shikho-blue font-noto-bengali text-base" style={{ marginTop: 0 }}>{'উপস্থিতি'}</span>
             </div>
           </div>
-          <div className="w-full flex justify-around bg-gray-50 rounded-xl py-2 mt-1 mb-1">
+          <div className={`w-full flex justify-around ${isYearlyReport ? 'bg-gray-50' : 'bg-white'} rounded-xl py-2 mt-1 mb-1`}>
             <div className="flex flex-col items-center liveclass-stats-col">
               <span className="text-shikho-blue font-bold text-lg">{toBengaliNumber(studentData.attendance.total)}</span>
               <span className="text-gray-600 font-noto-bengali text-xs">মোট ক্লাস</span>
@@ -301,7 +314,7 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
         {!hideUI && (
           <div className="w-full flex justify-center z-30 mt-4">
             <button
-              className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+              className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${isYearlyReport ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
               onClick={handleShare}
               style={{ maxWidth: '90vw' }}
             >
@@ -311,7 +324,7 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
         )}
         {/* Student name and class - visible in both normal and sharing modes */}
         <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
-          <p className="text-gray-500 font-noto-bengali text-sm">
+          <p className={`font-noto-bengali text-sm ${isYearlyReport ? 'text-gray-600' : 'text-gray-500'}`}>
             <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
           </p>
         </div>

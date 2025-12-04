@@ -32,8 +32,14 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
   const { reportMode: contextReportMode } = useStudentDataContext();
   const { mode } = useParams<{ mode?: string }>();
   
-  // Compute reportMode directly from URL parameter for immediate use
-  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  // Compute reportMode from URL parameter if present; otherwise fall back to context
+  const normalizedMode = mode?.toLowerCase();
+  const reportMode: ReportMode =
+    normalizedMode === 'yearly'
+      ? 'YEARLY'
+      : normalizedMode === 'quarterly'
+        ? 'QUARTERLY'
+        : contextReportMode;
   const texts = getStudentTexts('dayOfWeek', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('dayOfWeek', studentData.engagementLevel as EngagementLevel);
 
@@ -88,7 +94,7 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
 
   return (
     <>
-      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${hideUI ? ' sharing-mode' : ''}`}>        
+      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${reportMode === 'YEARLY' ? ' final-yearly' : ''}${hideUI ? ' sharing-mode' : ''}`}>        
         {/* Shikho logo */}
         <img
           src="/shikho_logo.png"
@@ -96,23 +102,34 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
           className="absolute z-50 left-1/2 -translate-x-1/2 w-10 h-10 h-sm:w-14 h-sm:h-14 h-md:w-16 h-md:h-16"
           style={{ top: 30 }}
         />
-        {/* Gradient background */}
-        <div className={gradientClass} />
+        {/* Background */}
+        {reportMode === 'YEARLY' ? (
+          <>
+            <div className="gradient-bg-final-yearly" />
+            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+          </>
+        ) : (
+          <div className={gradientClass} />
+        )}
         {/* Dot indicators */}
         {!hideUI && (
           <div className="fixed-dot-indicator">
-            {[...Array(7)].map((_, i) => (
-              <span
-                key={i}
-                className={`w-2 h-2 rounded-full ${i === 3 ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`}
-              />
-            ))}
+            {(() => {
+              const dotCount = reportMode === 'YEARLY' ? 8 : 7;
+              const activeIndex = reportMode === 'YEARLY' ? 4 : 3;
+              return [...Array(dotCount)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`w-2 h-2 rounded-full ${i === activeIndex ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`}
+                />
+              ));
+            })()}
           </div>
         )}
         {/* Card */}
         <div
           ref={cardRef}
-          className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-6 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}
+          className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-6 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}
         >
           {/* Header */}
           <h2 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'} mb-2`}>{texts.header}</h2>
@@ -157,7 +174,7 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
             </div>
           </div>
           {/* Lower Card */}
-          <div className="bg-gray-50 rounded-xl p-3 text-center w-full max-w-xs mx-auto">
+          <div className={`${reportMode === 'YEARLY' ? 'bg-gray-50' : 'bg-white'} rounded-xl p-3 text-center w-full max-w-xs mx-auto`}>
             <div className="w-10 h-10 rounded-full bg-shikho-pink/20 flex items-center justify-center mx-auto mb-2">
               <FaCalendarCheck className="text-sm text-shikho-pink" />
             </div>
@@ -186,7 +203,7 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
         {!hideUI && (
           <div className="w-full flex justify-center z-30 mt-4">
             <button
-              className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+              className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
               onClick={handleShare}
               style={{ maxWidth: '90vw' }}
             >
@@ -196,7 +213,7 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
         )}
         {/* Student name and class - visible in both normal and sharing modes */}
         <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
-          <p className="text-gray-500 font-noto-bengali text-sm">
+          <p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-500'}`}>
             <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
           </p>
         </div>

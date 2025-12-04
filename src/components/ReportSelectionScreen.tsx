@@ -61,7 +61,7 @@ export const ReportSelectionScreen = ({ onSelectMode }: ReportSelectionScreenPro
         </div>
       </div>
 
-      <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
+      <div className="fixed left-1/2 bottom-16 safe-bottom-16 mb-2 z-30 text-center student-name-display">
         <p className="text-gray-500 font-noto-bengali text-sm">
           তোমার গল্প এখান থেকেই শুরু
         </p>

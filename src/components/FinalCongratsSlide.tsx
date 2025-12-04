@@ -61,14 +61,24 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
   const { reportMode: contextReportMode } = useStudentDataContext();
   const { mode } = useParams<{ mode?: string }>();
   
-  // Compute reportMode directly from URL parameter for immediate use
-  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  // Compute reportMode from URL parameter if present; otherwise fall back to context
+  const normalizedMode = mode?.toLowerCase();
+  const reportMode: ReportMode =
+    normalizedMode === 'yearly'
+      ? 'YEARLY'
+      : normalizedMode === 'quarterly'
+        ? 'QUARTERLY'
+        : contextReportMode;
   const texts = getStudentTexts('finalCongrats', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('finalCongrats', studentData.engagementLevel as EngagementLevel);
+  const ctaText = reportMode === 'QUARTERLY' ? 'হোম-এ যাও' : texts.nextTerm;
 
   return (
     <>
-      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${hideUI ? ' sharing-mode' : ''}`}>
+      <div
+        className={`slide-container relative px-2${reportMode === 'YEARLY' ? ' final-yearly min-h-screen h-full overflow-y-auto pt-12 md:pt-16 pb-0 md:pb-2 flex flex-col items-center justify-between' : ' flex flex-col items-center justify-center'}${hideUI ? ' sharing-mode' : ''}`}
+        style={reportMode === 'YEARLY' ? undefined : undefined}
+      >
         {/* Shikho logo - positioned inside slide container to be captured in screenshot */}
         <img
           src="/shikho_logo.png"
@@ -77,47 +87,105 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
           style={{ top: 30 }}
         />
 
-        {/* Gradient background */}
-        <div className={gradientClass} />
+        {/* Background */}
+        {reportMode === 'YEARLY' ? (
+          <>
+            <div className="gradient-bg-final-yearly" />
+            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+          </>
+        ) : (
+          <div className={gradientClass} />
+        )}
         {/* Dot indicators */}
         {!hideUI && (
           <div className="fixed-dot-indicator">
-            {[...Array(7)].map((_, i) => (
-              <span
-                key={i}
-                className={`w-2 h-2 rounded-full ${i === 6 ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`}
-              />
-            ))}
+            {(() => {
+              const dotCount = reportMode === 'YEARLY' ? 8 : 7;
+              const activeIndex = reportMode === 'YEARLY' ? 7 : 6;
+              return [...Array(dotCount)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`w-2 h-2 rounded-full ${i === activeIndex ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`}
+                />
+              ));
+            })()}
           </div>
         )}
-        {/* Card */}
-        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-2 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
-          {/* Trophy Icon */}
-          <div className="w-16 h-16 trophy-gradient-bg rounded-full flex items-center justify-center mb-2">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 10a8 8 0 0 0 16 0V8a2 2 0 0 0-2-2H14a2 2 0 0 0-2 2v2Z" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M8 10v2a12 12 0 0 0 24 0v-2" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M20 26v6" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-              <path d="M16 36h8" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-              <path d="M6 10h4m20 0h4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </div>
-          {/* Header */}
-          <div className="text-center mb-1 mt-1">
-            <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-xl'} mb-2`}>{texts.header}</h1>
-            <p className="text-gray-600 font-noto-bengali text-base">
-            
-            </p>
-          </div>
-          {/* Rank Line */}
-          <div className="text-center mb-2 animate-pop">
-            <div className="text-[#CF278D] font-extrabold font-noto-bengali" style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}>
-              তোমার পজিশন: {toBengaliOrdinal(getRankFromEngagementLevel(studentData.engagementLevel))}
+        {/* Center content */}
+        {reportMode === 'YEARLY' ? (
+          <div className="flex-1 w-full z-10 pb-6 md:pb-10 flex flex-col items-center">
+            {/* Header removed from top per request */}
+            {/* Scale wrapper to fit on one screen */}
+            <div className="w-full flex flex-col items-center scale-90 origin-top">
+              {/* 2) Avatar (highest z-index) */}
+              <div className="relative z-30 -mb-24 md:-mb-24">
+                <img
+                  src="/avatar.png"
+                  alt="Teacher"
+                  className="w-40 md:w-44 object-contain mx-auto"
+                />
+              </div>
+              {/* 3) Main Glass Card (middle layer) */}
+              <div
+                ref={cardRef}
+                className={`relative z-10 w-[55vw] max-w-[420px] pt-24 pb-8 px-4 rounded-3xl text-center border border-white/20 shadow-[0_0_30px_rgba(59,130,246,0.35)] backdrop-blur-md overflow-hidden fade-in-slide${isVisible ? ' visible' : ''}`}
+              >
+                {/* Glass gradient background layer */}
+                <div className="absolute inset-0 bg-gradient-to-b from-blue-400/30 to-purple-700/60 z-0" />
+                {/* Content above the background */}
+                <div className="relative z-10">
+                  {/* Rank Badge */}
+                  <div className="relative -mt-1 mb-4">
+                    <span className="bg-[#a855f7] text-white px-6 py-1 rounded-full font-bold shadow-lg text-sm border border-white/20">
+                      তোমার পজিশন: {toBengaliOrdinal(getRankFromEngagementLevel(studentData.engagementLevel))}
+                    </span>
+                  </div>
+                  {/* Title */}
+                  <h2 className="text-white font-bold text-lg mb-6 drop-shadow-md font-noto-bengali">
+                    {texts.header}
+                  </h2>
+                  {/* Inner Score Box (darker glass) */}
+                  <div className="w-full px-3">
+                    <div className="bg-[#0f172a]/30 rounded-2xl p-6 border border-white/10 shadow-inner mx-auto text-white w-full">
+                      <p className="text-blue-100 text-xs mb-2 font-noto-bengali">{texts.scoreLabel}</p>
+                      <div className="text-5xl font-extrabold tracking-wide mb-2 drop-shadow-lg">
+                        <span className="finalcongrats-score-number">
+                          {toBengaliNumber(animatedScore)}
+                          <span className="text-2xl text-white/50"> / </span>
+                          {toBengaliNumber(total)}
+                        </span>
+                      </div>
+                      {/* Stars */}
+                      <div className="flex justify-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <svg
+                            key={i}
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill={i < stars ? '#FFD600' : '#E5E7EB'}
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="mx-0.5"
+                          >
+                            <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z" />
+                          </svg>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  {/* CTA Button */}
+                  {!hideUI && (
+                    <button
+                      className="w-full bg-gradient-to-r from-pink-500 to-purple-600 border-t border-white/20 text-white font-bold py-3 rounded-full mt-6 shadow-lg active:scale-95 transition-transform"
+                      onClick={onNext}
+                    >
+                      ২০২৬ সাল শুরু করো
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-          {/* Score Card */}
-          <div className="w-full flex flex-col items-center score-gradient-bg rounded-xl py-4 mt-2 mb-4 relative shadow-sm">
-            {/* Left arrow */}
+            {/* Navigation arrows like other screens (only left for final) */}
             {onPrev && !hideUI && (
               <ArrowButton
                 direction="left"
@@ -126,59 +194,119 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
                 style={{ left: -5 }}
               />
             )}
-            {/* Score */}
-            <div className="text-center">
-              <div className="text-gray-700 font-noto-bengali text-sm mb-1">{texts.scoreLabel}</div>
-              <div className="text-shikho-blue font-extrabold text-4xl mb-1">
-                <span className="finalcongrats-score-number">{toBengaliNumber(animatedScore)}<span className="text-2xl font-normal"> / </span>{toBengaliNumber(total)}</span>
+            {/* 4) Footer (fixed like other screens) */}
+            {!hideUI && (
+              <div className="w-full flex justify-center z-30">
+                <button
+                  className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-white text-[#16325B] font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+                  onClick={handleShare}
+                  style={{ maxWidth: '90vw' }}
+                >
+                  শেয়ার করো!
+                </button>
               </div>
-              {/* Stars */}
-              <div className="flex justify-center mt-1">
-                {[...Array(5)].map((_, i) => (
-                  <svg
-                    key={i}
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill={i < stars ? '#FFD600' : '#E5E7EB'}
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="mx-0.5"
-                  >
-                    <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z" />
-                  </svg>
-                ))}
+            )}
+            {/* Student name and class */}
+            <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
+              <p className="text-gray-600 font-noto-bengali text-sm">
+                <span className="font-semibold">{studentData.name}</span> • {studentData.class}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-2 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
+            {/* Trophy Icon */}
+            <div className="w-16 h-16 trophy-gradient-bg rounded-full flex items-center justify-center mb-2">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 10a8 8 0 0 0 16 0V8a2 2 0 0 0-2-2H14a2 2 0 0 0-2 2v2Z" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M8 10v2a12 12 0 0 0 24 0v-2" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M20 26v6" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M16 36h8" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M6 10h4m20 0h4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+            {/* Header */}
+            <div className="text-center mb-1 mt-1">
+              <h1 className="text-[#354894] font-bold text-center font-noto-bengali text-xl mb-2">{texts.header}</h1>
+              <p className="text-gray-600 font-noto-bengali text-base">
+              
+              </p>
+            </div>
+            {/* Rank Line */}
+            <div className="text-center mb-2 animate-pop">
+              <div className="text-[#CF278D] font-extrabold font-noto-bengali" style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}>
+                তোমার পজিশন: {toBengaliOrdinal(getRankFromEngagementLevel(studentData.engagementLevel))}
               </div>
             </div>
-          
-          </div>
-          {/* Next Term Button */}
-          {!hideUI && (
-            <button
-              className="w-full btn-gradient-cta font-noto-bengali font-bold rounded-full text-base px-4 py-3 mt-2 mb-2 shadow-lg transition"
-              onClick={onNext}
-            >
-              {texts.nextTerm}
-            </button>
-          )}
-        </div>
-        {/* Share button at the bottom */}
-        {!hideUI && (
-          <div className="w-full flex justify-center z-30 mt-4">
-            <button
-              className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
-              onClick={handleShare}
-              style={{ maxWidth: '90vw' }}
-            >
-              শেয়ার করো!
-            </button>
+            {/* Score Card */}
+            <div className="w-full flex flex-col items-center score-gradient-bg rounded-xl py-4 mt-2 mb-4 relative shadow-sm">
+              {/* Left arrow */}
+              {onPrev && !hideUI && (
+                <ArrowButton
+                  direction="left"
+                  onClick={onPrev}
+                  className="fixed top-1/2 -translate-y-1/2 z-30"
+                  style={{ left: -5 }}
+                />
+              )}
+              {/* Score */}
+              <div className="text-center">
+                <div className="text-gray-700 font-noto-bengali text-sm mb-1">{texts.scoreLabel}</div>
+                <div className="text-shikho-blue font-extrabold text-4xl mb-1">
+                  <span className="finalcongrats-score-number">{toBengaliNumber(animatedScore)}<span className="text-2xl font-normal"> / </span>{toBengaliNumber(total)}</span>
+                </div>
+                {/* Stars */}
+                <div className="flex justify-center mt-1">
+                  {[...Array(5)].map((_, i) => (
+                    <svg
+                      key={i}
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill={i < stars ? '#FFD600' : '#E5E7EB'}
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mx-0.5"
+                    >
+                      <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+            
+            </div>
+            {/* Next Term Button */}
+            {!hideUI && (
+              <button
+                className="w-full btn-gradient-cta font-noto-bengali font-bold rounded-full text-base px-4 py-3 mt-2 mb-2 shadow-lg transition"
+                onClick={onNext}
+              >
+                {ctaText}
+              </button>
+            )}
           </div>
         )}
-        {/* Student name and class - visible in both normal and sharing modes */}
-        <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
-          <p className="text-gray-500 font-noto-bengali text-sm">
-            <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
-          </p>
-        </div>
+        {/* Share and student footer for non-YEARLY mode (YEARLY renders its own footer) */}
+        {reportMode !== 'YEARLY' && (
+          <>
+            {!hideUI && (
+              <div className="w-full flex justify-center z-30 mt-4">
+                <button
+                  className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+                  onClick={handleShare}
+                  style={{ maxWidth: '90vw' }}
+                >
+                  শেয়ার করো!
+                </button>
+              </div>
+            )}
+            {/* Student name and class */}
+            <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
+              <p className="text-gray-500 font-noto-bengali text-sm">
+                <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
+              </p>
+            </div>
+          </>
+        )}
         {/* Confetti above everything */}
         <div className="pointer-events-none fixed inset-0 w-full h-full z-30">
           <Confetti />

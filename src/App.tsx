@@ -12,6 +12,7 @@ import type { ReportMode } from './context/StudentDataContext';
 import { RouteGuard } from './components/RouteGuard';
 import { ReportSelectionScreen } from './components/ReportSelectionScreen';
 import { YearlyStudyTimeSlide } from './components/YearlyStudyTimeSlide';
+import { YearlySubjectPodiumSlide } from './components/YearlySubjectPodiumSlide';
 
 function WelcomeSlideRoute() {
   const { studentId, academicProgramId, mode } = useParams<{ studentId: string; academicProgramId: string; mode: string }>();
@@ -43,7 +44,7 @@ function LiveClassSlideRoute() {
 
 function LiveTestSlideRoute() {
   const { studentId, academicProgramId, mode } = useParams<{ studentId: string; academicProgramId: string; mode: string }>();
-  const { studentData } = useStudentDataContext();
+  const { studentData, reportMode } = useStudentDataContext();
   const navigate = useNavigate();
   
   return (
@@ -51,7 +52,7 @@ function LiveTestSlideRoute() {
       <LiveTestSlide
         studentData={studentData!}
         onPrev={() => navigate(`/${studentId}/${academicProgramId}/${mode}/class`)}
-        onNext={() => navigate(`/${studentId}/${academicProgramId}/${mode}/weekday`)}
+        onNext={() => navigate(`/${studentId}/${academicProgramId}/${mode}/${reportMode === 'YEARLY' ? 'podium' : 'weekday'}`)}
       />
     </RouteGuard>
   );
@@ -59,14 +60,14 @@ function LiveTestSlideRoute() {
 
 function DayOfWeekSlideRoute() {
   const { studentId, academicProgramId, mode } = useParams<{ studentId: string; academicProgramId: string; mode: string }>();
-  const { studentData } = useStudentDataContext();
+  const { studentData, reportMode } = useStudentDataContext();
   const navigate = useNavigate();
   
   return (
     <RouteGuard>
       <DayOfWeekSlide
         studentData={studentData!}
-        onPrev={() => navigate(`/${studentId}/${academicProgramId}/${mode}/livetest`)}
+        onPrev={() => navigate(`/${studentId}/${academicProgramId}/${mode}/${reportMode === 'YEARLY' ? 'podium' : 'livetest'}`)}
         onNext={() => navigate(`/${studentId}/${academicProgramId}/${mode}/streak`)}
       />
     </RouteGuard>
@@ -94,6 +95,22 @@ function StudyTimeSlideRoute() {
           onNext={() => navigate(`/${studentId}/${academicProgramId}/${mode}/final`)}
         />
       )}
+    </RouteGuard>
+  );
+}
+
+function YearlySubjectPodiumSlideRoute() {
+  const { studentId, academicProgramId, mode } = useParams<{ studentId: string; academicProgramId: string; mode: string }>();
+  const { studentData } = useStudentDataContext();
+  const navigate = useNavigate();
+  
+  return (
+    <RouteGuard>
+      <YearlySubjectPodiumSlide
+        studentData={studentData!}
+        onPrev={() => navigate(`/${studentId}/${academicProgramId}/${mode}/livetest`)}
+        onNext={() => navigate(`/${studentId}/${academicProgramId}/${mode}/weekday`)}
+      />
     </RouteGuard>
   );
 }
@@ -167,6 +184,7 @@ function App() {
           <Route path=":studentId/:academicProgramId/:mode" element={<WelcomeSlideRoute />} />
           <Route path=":studentId/:academicProgramId/:mode/class" element={<LiveClassSlideRoute />} />
           <Route path=":studentId/:academicProgramId/:mode/livetest" element={<LiveTestSlideRoute />} />
+          <Route path=":studentId/:academicProgramId/:mode/podium" element={<YearlySubjectPodiumSlideRoute />} />
           <Route path=":studentId/:academicProgramId/:mode/weekday" element={<DayOfWeekSlideRoute />} />
           <Route path=":studentId/:academicProgramId/:mode/studytime" element={<StudyTimeSlideRoute />} />
           <Route path=":studentId/:academicProgramId/:mode/streak" element={<StreakTrackerSlideRoute />} />

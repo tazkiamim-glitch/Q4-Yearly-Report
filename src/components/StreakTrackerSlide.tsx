@@ -20,7 +20,17 @@ interface StreakTrackerSlideProps {
 export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTrackerSlideProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const { handleShare, modalOpen, setModalOpen, imgUrl, handleDownload, hideUI } = useShare({});
-  const streak = studentData.streak.longest;
+  const { reportMode: contextReportMode } = useStudentDataContext();
+  const { mode } = useParams<{ mode?: string }>();
+  // Compute reportMode from URL parameter if present; otherwise fall back to context
+  const normalizedMode = mode?.toLowerCase();
+  const reportMode: ReportMode =
+    normalizedMode === 'yearly'
+      ? 'YEARLY'
+      : normalizedMode === 'quarterly'
+        ? 'QUARTERLY'
+        : contextReportMode;
+  const streak = reportMode === 'QUARTERLY' ? 15 : studentData.streak.longest;
   // Calculate streak boxes
   let boxes: number[] = [];
   if (streak === 0) {
@@ -56,17 +66,12 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
     return () => clearTimeout(timeout);
   }, [streak, boxes.length]);
 
-  const { reportMode: contextReportMode } = useStudentDataContext();
-  const { mode } = useParams<{ mode?: string }>();
-  
-  // Compute reportMode directly from URL parameter for immediate use
-  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
   const texts = getStudentTexts('streakTracker', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('streakTracker', studentData.engagementLevel as EngagementLevel);
 
   return (
     <>
-      <div className={`slide-container flex flex-col items-center justify-center px-2 py-2 relative${hideUI ? ' sharing-mode' : ''}`}>
+      <div className={`slide-container flex flex-col items-center justify-center px-2 py-2 relative${reportMode === 'YEARLY' ? ' final-yearly' : ''}${hideUI ? ' sharing-mode' : ''}`}>
         {/* Shikho logo - positioned inside slide container to be captured in screenshot */}
         <img
           src="/shikho_logo.png"
@@ -75,20 +80,31 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
           style={{ top: 30 }}
         />
 
-        <div className={gradientClass} />
+        {reportMode === 'YEARLY' ? (
+          <>
+            <div className="gradient-bg-final-yearly" />
+            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+          </>
+        ) : (
+          <div className={gradientClass} />
+        )}
         {/* Dot indicators */}
         {!hideUI && (
           <div className="fixed-dot-indicator">
-            {[...Array(7)].map((_, i) => (
-              <span
-                key={i}
-                className={`w-2 h-2 rounded-full ${i === 4 ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`}
-              />
-            ))}
+            {(() => {
+              const dotCount = reportMode === 'YEARLY' ? 8 : 7;
+              const activeIndex = reportMode === 'YEARLY' ? 5 : 4;
+              return [...Array(dotCount)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`w-2 h-2 rounded-full ${i === activeIndex ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`}
+                />
+              ));
+            })()}
           </div>
         )}
         {/* Card */}
-        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
+        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
           {/* Header */}
           <div className="text-center mb-1 mt-1">
             <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'}`}>{texts.header}</h1>
@@ -133,7 +149,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
             })}
           </div>
           {/* Streak Stat */}
-          <div className="w-full flex flex-col items-center bg-gray-50 rounded-xl py-6 mt-1 mb-1">
+          <div className={`w-full flex flex-col items-center ${reportMode === 'YEARLY' ? 'bg-gray-50' : 'bg-white'} rounded-xl py-6 mt-1 mb-1`}>
             <div className="flex flex-col items-center">
               <span className="text-sm text-gray-500 font-noto-bengali font-medium mb-1">সর্বোচ্চ স্ট্রিক</span>
               <span className="text-5xl fire-emoji" role="img" aria-label="fire">🔥</span>
@@ -196,7 +212,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
         {!hideUI && (
           <div className="w-full flex justify-center z-30 mt-4">
             <button
-              className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+              className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
               onClick={handleShare}
               style={{ maxWidth: '90vw' }}
             >
@@ -206,7 +222,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
         )}
         {/* Student name and class - visible in both normal and sharing modes */}
         <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
-          <p className="text-gray-500 font-noto-bengali text-sm">
+          <p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-white/80' : 'text-gray-500'}`}>
             <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
           </p>
         </div>

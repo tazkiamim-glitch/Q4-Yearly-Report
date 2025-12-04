@@ -46,8 +46,14 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
   const { reportMode: contextReportMode } = useStudentDataContext();
   const { mode } = useParams<{ mode?: string }>();
 
-  // Compute reportMode directly from URL parameter for immediate use
-  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  // Compute reportMode from URL parameter if present; otherwise fall back to context
+  const normalizedMode = mode?.toLowerCase();
+  const reportMode: ReportMode =
+    normalizedMode === 'yearly'
+      ? 'YEARLY'
+      : normalizedMode === 'quarterly'
+        ? 'QUARTERLY'
+        : contextReportMode;
 
   const texts = getStudentTexts('welcome', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('welcome', studentData.engagementLevel as EngagementLevel);
@@ -55,10 +61,11 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+  const displayStreak = reportMode === 'QUARTERLY' ? 15 : studentData.streak.longest;
 
   return (
     <>
-      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${hideUI ? ' sharing-mode' : ''}`}>
+      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${reportMode === 'YEARLY' ? ' final-yearly' : ''}${hideUI ? ' sharing-mode' : ''}`}>
         {/* Shikho logo - positioned inside slide container to be captured in screenshot */}
         <img
           src="/shikho_logo.png"
@@ -67,8 +74,15 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
           style={{ top: 30 }}
         />
 
-        {/* Gradient background */}
-        <div className={gradientClass} />
+        {/* Background */}
+        {reportMode === 'YEARLY' ? (
+          <>
+            <div className="gradient-bg-final-yearly" />
+            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+          </>
+        ) : (
+          <div className={gradientClass} />
+        )}
 
         {/* Dot indicators */}
         {!hideUI && (
@@ -83,7 +97,7 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
         )}
 
         {/* Oval card */}
-        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
+        <div ref={cardRef} className={`card-oval ${reportMode === 'YEARLY' ? 'card-oval-compact' : ''} w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
           {/* Header */}
           {texts.header && (
             <div className="text-center mb-1 mt-1 px-2">
@@ -93,37 +107,47 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
             </div>
           )}
 
-          {/* Profile Section */}
-          <div className="flex flex-col items-center mb-2">
-            <div className="w-16 h-16 bg-shikho-pink bg-opacity-20 rounded-full flex items-center justify-center mb-1">
-              <div className="w-8 h-8 text-shikho-pink text-3xl flex items-center justify-center welcome-student-emoji">
-                👩‍🎓
-              </div>
+          {/* Visual section (Yearly: Hero image, Otherwise: Profile) */}
+          {reportMode === 'YEARLY' ? (
+            <div className="w-full flex justify-center items-center mb-2">
+              <img
+                src="/Teacher_Student.png"
+                alt="Student and Teacher"
+                className="h-56 w-auto object-contain drop-shadow-lg"
+              />
             </div>
-            <h2 className="text-xl font-noto-bengali font-semibold mb-1 mt-2 text-shikho-blue">
-              {studentData.name}
-            </h2>
-          </div>
+          ) : (
+            <div className="flex flex-col items-center mb-2">
+              <div className="w-16 h-16 bg-shikho-pink bg-opacity-20 rounded-full flex items-center justify-center mb-1">
+                <div className="w-8 h-8 text-shikho-pink text-3xl flex items-center justify-center welcome-student-emoji">
+                  👩‍🎓
+                </div>
+              </div>
+              <h2 className="text-xl font-noto-bengali font-semibold mb-1 mt-2 text-shikho-blue">
+                {studentData.name}
+              </h2>
+            </div>
+          )}
 
           {/* Horizontal Stats Row */}
           <div className="w-full flex justify-between items-stretch gap-4 mb-1 mt-1">
-            <div className="flex-1 min-w-0 bg-white rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border border-[#F9D7EC] bg-[#FFF7FB]">
+            <div className={`flex-1 min-w-0 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border ${reportMode === 'YEARLY' ? 'border-[#F9D7EC] bg-[#FFF7FB]' : 'border-gray-200 bg-white'}`}>
               <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-1">
                 <span className="text-2xl font-bold text-shikho-pink">{toBengaliNumber(studentData.attendance.percent)}</span>
                 <span className="text-2xl font-bold text-shikho-pink">%</span>
               </div>
               <p className="text-gray-600 font-noto-bengali text-sm">ক্লাস উপস্থিতি</p>
             </div>
-            <div className="flex-1 min-w-0 bg-white rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border border-[#D6DBF7] bg-[#F7F8FF]">
+            <div className={`flex-1 min-w-0 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border ${reportMode === 'YEARLY' ? 'border-[#D6DBF7] bg-[#F7F8FF]' : 'border-gray-200 bg-white'}`}>
               <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-1">
                 <span className="text-2xl font-bold text-shikho-blue">{toBengaliNumber(quizPercentage)}</span>
                 <span className="text-2xl font-bold text-shikho-blue">%</span>
               </div>
-              <p className="text-gray-600 font-noto-bengali text-sm">কুইজ স্কোর</p>
+              <p className="text-gray-600 font-noto-bengali text-sm whitespace-nowrap">লাইভ এক্সাম স্কোর</p>
             </div>
-            <div className="flex-1 min-w-0 bg-white rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border border-[#FFE6A7] bg-[#FFFCF5]">
+            <div className={`flex-1 min-w-0 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border ${reportMode === 'YEARLY' ? 'border-[#FFE6A7] bg-[#FFFCF5]' : 'border-gray-200 bg-white'}`}>
               <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-0">
-                <span className="text-2xl font-bold text-shikho-yellow">{toBengaliNumber(studentData.streak.longest)}</span>
+                <span className="text-2xl font-bold text-shikho-yellow">{toBengaliNumber(displayStreak)}</span>
                 <span className="text-2xl font-bold text-shikho-yellow">দিন</span>
               </div>
               <p className="text-gray-600 font-noto-bengali text-sm mt-1">সর্বোচ্চ স্ট্রিক</p>
@@ -147,8 +171,8 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
         {/* Class and section info above share button */}
         {!hideUI && (
           <div className="fixed left-1/2 -translate-x-1/2 bottom-20 z-30 text-center">
-            <p className="text-gray-600 font-noto-bengali text-sm font-bold">
-              {studentData.class}, {studentData.section}
+            <p className={`font-noto-bengali text-sm font-bold ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-600'}`}>
+              <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
             </p>
           </div>
         )}
@@ -157,7 +181,7 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
         {!hideUI && (
           <div className="w-full flex justify-center z-30 mt-4">
             <button
-              className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+              className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
               onClick={handleShare}
               style={{ maxWidth: '90vw' }}
             >

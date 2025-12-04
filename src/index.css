@@ -69,6 +69,10 @@ body {
   @apply bg-white rounded-3xl shadow-lg px-3 py-6 sm:px-4 sm:py-8 md:px-6 md:py-10 max-w-md mx-auto relative z-20;
 }
 
+.card-oval-compact {
+  @apply py-2 sm:py-3 md:py-4;
+}
+
 .slide-container {
   height: 100dvh;
   min-height: 0 !important;
@@ -187,5 +191,40 @@ body {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Yearly report backgrounds */
+.gradient-bg-final-yearly {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background-image: url('/screen bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Replaces old PNG final background with pure CSS.
+   Note: final slide now renders a separate `.sunburst-bg` layer.
+   This class remains for legacy but no longer uses external images. */
+.gradient-bg-yearly-final {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background:
+    radial-gradient(ellipse at 50% 100%, #8fd3ff 0%, #54b6ff 45%, #3aa0ee 100%);
+}
+
+/* Pure CSS sunburst rays from bottom center for yearly final slide.
+   Used as an absolutely positioned layer behind content. */
+.sunburst-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.18) 25%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.00) 60%),
+    repeating-conic-gradient(
+      from 270deg at 50% 100%,
+      rgba(255,255,255,0.35) 0deg 8deg,
+      rgba(255,255,255,0.00) 8deg 20deg
+    );
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 

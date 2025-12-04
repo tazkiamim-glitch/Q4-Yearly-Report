@@ -124,14 +124,20 @@ export const StudyTimeSlide = ({ studentData, onPrev, onNext }: StudyTimeSlidePr
   const { reportMode: contextReportMode } = useStudentDataContext();
   const { mode } = useParams<{ mode?: string }>();
   
-  // Compute reportMode directly from URL parameter for immediate use
-  const reportMode: ReportMode = mode?.toLowerCase() === 'yearly' ? 'YEARLY' : contextReportMode;
+  // Compute reportMode from URL parameter if present; otherwise fall back to context
+  const normalizedMode = mode?.toLowerCase();
+  const reportMode: ReportMode =
+    normalizedMode === 'yearly'
+      ? 'YEARLY'
+      : normalizedMode === 'quarterly'
+        ? 'QUARTERLY'
+        : contextReportMode;
   const texts = getStudentTexts('studyTime', studentData.engagementLevel as EngagementLevel, reportMode);
   const gradientClass = getGradientClass('studyTime', studentData.engagementLevel as EngagementLevel);
 
   return (
     <>
-      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${hideUI ? ' sharing-mode' : ''}`}>
+      <div className={`slide-container flex flex-col items-center justify-center px-2 relative${reportMode === 'YEARLY' ? ' final-yearly' : ''}${hideUI ? ' sharing-mode' : ''}`}>
         {/* Shikho logo - positioned inside slide container to be captured in screenshot */}
         <img
           src="/shikho_logo.png"
@@ -140,21 +146,32 @@ export const StudyTimeSlide = ({ studentData, onPrev, onNext }: StudyTimeSlidePr
           style={{ top: 30 }}
         />
 
-        {/* Gradient background */}
-        <div className={gradientClass} />
+        {/* Background */}
+        {reportMode === 'YEARLY' ? (
+          <>
+            <div className="gradient-bg-final-yearly" />
+            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+          </>
+        ) : (
+          <div className={gradientClass} />
+        )}
         {/* Dot indicators */}
         {!hideUI && (
           <div className="fixed-dot-indicator">
-            {[...Array(7)].map((_, i) => (
-              <span
-                key={i}
-                className={`w-2 h-2 rounded-full ${i === 5 ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`}
-              />
-            ))}
+            {(() => {
+              const dotCount = reportMode === 'YEARLY' ? 8 : 7;
+              const activeIndex = 5; // StudyTime position in quarterly flow
+              return [...Array(dotCount)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`w-2 h-2 rounded-full ${i === activeIndex ? 'bg-shikho-pink' : 'bg-gray-300'} inline-block`}
+                />
+              ));
+            })()}
           </div>
         )}
         {/* Card */}
-        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
+        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
           {/* Header */}
           <div className="text-center mb-1 mt-1">
             <h1 className="text-shikho-blue text-lg font-noto-bengali mb-2 font-bold">{texts.header}</h1>
@@ -164,7 +181,7 @@ export const StudyTimeSlide = ({ studentData, onPrev, onNext }: StudyTimeSlidePr
             <StudyTimeDonut oct={animatedOct} nov={animatedNov} dec={animatedDec} size={size} stroke={stroke} displayMinutes={displayMinutes} />
           </div>
           {/* Stats Row */}
-          <div className="w-full flex justify-around bg-gray-50 rounded-xl py-2 mt-1 mb-1">
+          <div className={`w-full flex justify-around ${reportMode === 'YEARLY' ? 'bg-gray-50' : 'bg-white'} rounded-xl py-2 mt-1 mb-1`}>
             <div className="flex flex-col items-center studytime-stats-col">
               <span className="text-shikho-pink font-bold text-lg">{toBengaliNumber(studyTime.october)}</span>
               <span className="text-gray-600 font-noto-bengali text-xs">{texts.oct}</span>
@@ -234,7 +251,7 @@ export const StudyTimeSlide = ({ studentData, onPrev, onNext }: StudyTimeSlidePr
         {!hideUI && (
           <div className="w-full flex justify-center z-30 mt-4">
             <button
-              className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
+              className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
               onClick={handleShare}
               style={{ maxWidth: '90vw' }}
             >
@@ -244,7 +261,7 @@ export const StudyTimeSlide = ({ studentData, onPrev, onNext }: StudyTimeSlidePr
         )}
         {/* Student name and class - visible in both normal and sharing modes */}
         <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
-          <p className="text-gray-500 font-noto-bengali text-sm">
+          <p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-500'}`}>
             <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
           </p>
         </div>
