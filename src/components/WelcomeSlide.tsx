@@ -132,18 +132,21 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
           {/* Horizontal Stats Row */}
           <div className="w-full flex justify-between items-stretch gap-4 mb-1 mt-1">
             <div className={`flex-1 min-w-0 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border ${reportMode === 'YEARLY' ? 'border-[#F9D7EC] bg-[#FFF7FB]' : 'border-gray-200 bg-white'}`}>
-              <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-1">
+              <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-0">
                 <span className="text-2xl font-bold text-shikho-pink">{toBengaliNumber(studentData.attendance.percent)}</span>
                 <span className="text-2xl font-bold text-shikho-pink">%</span>
               </div>
-              <p className="text-gray-600 font-noto-bengali text-sm">ক্লাস উপস্থিতি</p>
+              <p className="text-gray-600 font-noto-bengali text-sm mt-1">ক্লাস উপস্থিতি</p>
             </div>
             <div className={`flex-1 min-w-0 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border ${reportMode === 'YEARLY' ? 'border-[#D6DBF7] bg-[#F7F8FF]' : 'border-gray-200 bg-white'}`}>
-              <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-1">
+              <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-0">
                 <span className="text-2xl font-bold text-shikho-blue">{toBengaliNumber(quizPercentage)}</span>
                 <span className="text-2xl font-bold text-shikho-blue">%</span>
               </div>
-              <p className="text-gray-600 font-noto-bengali text-sm whitespace-nowrap">লাইভ এক্সাম স্কোর</p>
+              <p className="text-gray-600 font-noto-bengali text-sm mt-1">
+                <span className="hidden sm:inline whitespace-nowrap">লাইভ এক্সাম স্কোর</span>
+                <span className="block sm:hidden leading-tight">লাইভ এক্সাম<br />স্কোর</span>
+              </p>
             </div>
             <div className={`flex-1 min-w-0 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center border ${reportMode === 'YEARLY' ? 'border-[#FFE6A7] bg-[#FFFCF5]' : 'border-gray-200 bg-white'}`}>
               <div className="flex flex-row items-baseline justify-center gap-1 whitespace-nowrap mb-0">

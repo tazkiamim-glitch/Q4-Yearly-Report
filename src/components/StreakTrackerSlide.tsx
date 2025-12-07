@@ -110,14 +110,14 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
             <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'}`}>{texts.header}</h1>
           </div>
           {/* Streak Boxes */}
-          <div className="flex justify-center gap-2 my-4">
+          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 my-4 w-full">
             {boxes.map((num, idx) => {
               // For streak 0, only one box, styled as grey
               if (streak === 0) {
                 return (
                   <span
                     key={num}
-                    className="min-w-[40px] h-8 flex items-center justify-center px-2 rounded-md font-bold text-lg font-noto-bengali bg-gray-200 text-gray-400 border border-gray-300 streak-box-text"
+                    className="min-w-[36px] sm:min-w-[40px] h-8 flex items-center justify-center px-1.5 sm:px-2 rounded-md font-bold text-base sm:text-lg font-noto-bengali bg-gray-200 text-gray-400 border border-gray-300 streak-box-text"
                   >
                     <span className="streak-box-number">{toBengaliNumber(num)}</span>
                   </span>
@@ -128,7 +128,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
               return (
                 <span
                   key={num}
-                  className={`min-w-[40px] h-8 flex items-center justify-center px-2 rounded-md font-bold text-lg font-noto-bengali transition-colors duration-300 streak-box-text
+                  className={`min-w-[36px] sm:min-w-[40px] h-8 flex items-center justify-center px-1.5 sm:px-2 rounded-md font-bold text-base sm:text-lg font-noto-bengali transition-colors duration-300 streak-box-text
                     ${isLast
                       ? 'bg-gray-200 text-gray-400 border border-gray-300'
                       : idx < activeBoxes
