@@ -97,7 +97,7 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
         )}
 
         {/* Oval card */}
-        <div ref={cardRef} className={`card-oval ${reportMode === 'YEARLY' ? 'card-oval-compact' : ''} w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
+        <div ref={cardRef} className={`card-oval ${reportMode === 'YEARLY' ? 'card-oval-compact' : ''} card-responsive flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
           {/* Header */}
           {texts.header && (
             <div className="text-center mb-1 mt-1 px-2">
@@ -170,7 +170,7 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
 
         {/* Class and section info above share button */}
         {!hideUI && (
-          <div className="fixed left-1/2 -translate-x-1/2 bottom-20 z-30 text-center">
+          <div className="fixed left-1/2 -translate-x-1/2 bottom-20 z-30 text-center" style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}>
             <p className={`font-noto-bengali text-sm font-bold ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-600'}`}>
               <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
             </p>
@@ -183,7 +183,7 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
             <button
               className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
               onClick={handleShare}
-              style={{ maxWidth: '90vw' }}
+              style={{ maxWidth: '90vw', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}
             >
               শেয়ার করো!
             </button>

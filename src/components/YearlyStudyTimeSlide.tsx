@@ -56,6 +56,8 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
   };
 
   const totalHoursBn = formatHours(resolvedData.totalHours);
+  const totalHoursNum = parseInt(resolvedData.totalHours.replace(/[^\d]/g, '') || '0', 10);
+  const approxDaysBn = toBengaliNumber(Math.round(totalHoursNum / 24));
 
   // Reusable SVG path data for the road (used by both road strokes and the car animation)
   const ROAD_PATH_D = 'M -10 100 C 60 100, 80 40, 160 40 S 260 100, 350 100';
@@ -84,7 +86,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
         </div>
       )}
 
-      <div className="card-oval w-[55vw] max-w-[420px] flex flex-col items-center px-4 card-oval-compact mb-6 fade-in-slide visible overflow-visible bg-gradient-to-b from-white to-[#EAF2FF]">
+      <div className="card-oval card-responsive flex flex-col items-center px-4 card-oval-compact mb-6 fade-in-slide visible overflow-visible bg-gradient-to-b from-white to-[#EAF2FF]">
         <div className="text-center mb-0 px-3">
           <h1 className="text-[#354894] text-xl font-bold text-center font-noto-bengali">
             {texts.header}
@@ -283,12 +285,12 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
         {/* Total hours & footer inside card */}
         <div className="w-full px-3 mt-3 mb-0">
           <div className="rounded-xl bg-gray-50 p-2 sm:p-2.5 text-center">
-            <p className="text-xl sm:text-2xl font-semibold text-shikho-blue">{totalHoursBn}</p>
-            <p className="text-slate-600 mt-1 font-noto-bengali text-sm">সারা বছরের অর্জন</p>
+            <p className="text-xl sm:text-2xl font-semibold text-shikho-pink">{totalHoursBn}</p>
+            {/* Removed caption as requested */}
           </div>
         </div>
         <p className="text-gray-600 text-sm text-center font-medium font-noto-bengali px-4 mt-2 mb-2">
-          {texts.footer}
+          তুমি সারা বছরে মোট <span className="text-shikho-pink font-semibold">{totalHoursBn}</span> পড়েছ - একটানা প্রায় <span className="text-shikho-pink font-semibold">{approxDaysBn} দিন</span> পড়াশোনার সমান!
         </p>
 
       </div>
@@ -316,14 +318,14 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
           <button
             className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
             onClick={handleShare}
-            style={{ maxWidth: '90vw' }}
+            style={{ maxWidth: '90vw', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}
           >
             শেয়ার করো!
           </button>
         </div>
       )}
 
-      <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
+      <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display" style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}>
         <p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-500'}`}>
           <span className="font-semibold">{studentData.name}</span> • {studentData.class}
         </p>

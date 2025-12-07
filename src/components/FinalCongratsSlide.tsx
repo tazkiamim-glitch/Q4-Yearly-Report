@@ -76,7 +76,7 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
   return (
     <>
       <div
-        className={`slide-container relative px-2${reportMode === 'YEARLY' ? ' final-yearly min-h-screen h-full overflow-y-auto pt-12 md:pt-16 pb-0 md:pb-2 flex flex-col items-center justify-between' : ' flex flex-col items-center justify-center'}${hideUI ? ' sharing-mode' : ''}`}
+        className={`slide-container relative px-2${reportMode === 'YEARLY' ? ' final-yearly min-h-screen h-full overflow-y-auto pt-16 md:pt-20 pb-0 md:pb-2 flex flex-col items-center justify-center' : ' flex flex-col items-center justify-center'}${hideUI ? ' sharing-mode' : ''}`}
         style={reportMode === 'YEARLY' ? undefined : undefined}
       >
         {/* Shikho logo - positioned inside slide container to be captured in screenshot */}
@@ -116,7 +116,7 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
           <div className="flex-1 w-full z-10 pb-6 md:pb-10 flex flex-col items-center">
             {/* Header removed from top per request */}
             {/* Scale wrapper to fit on one screen */}
-            <div className="w-full flex flex-col items-center scale-90 origin-top">
+            <div className="w-full flex flex-col items-center scale-90 origin-top mt-2 h-sm:mt-4">
               {/* 2) Avatar (highest z-index) */}
               <div className="relative z-30 -mb-24 md:-mb-24">
                 <img
@@ -128,7 +128,7 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
               {/* 3) Main Glass Card (middle layer) */}
               <div
                 ref={cardRef}
-                className={`relative z-10 w-[55vw] max-w-[420px] pt-24 pb-8 px-4 rounded-3xl text-center border border-white/20 shadow-[0_0_30px_rgba(59,130,246,0.35)] backdrop-blur-md overflow-hidden fade-in-slide${isVisible ? ' visible' : ''}`}
+                className={`relative z-10 card-responsive pt-24 pb-8 px-4 rounded-3xl text-center border border-white/20 shadow-[0_0_30px_rgba(59,130,246,0.35)] backdrop-blur-md overflow-hidden fade-in-slide${isVisible ? ' visible' : ''}`}
               >
                 {/* Glass gradient background layer */}
                 <div className="absolute inset-0 bg-gradient-to-b from-blue-400/30 to-purple-700/60 z-0" />
@@ -207,14 +207,14 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
               </div>
             )}
             {/* Student name and class */}
-            <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
+            <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display" style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}>
               <p className="text-gray-600 font-noto-bengali text-sm">
                 <span className="font-semibold">{studentData.name}</span> • {studentData.class}
               </p>
             </div>
           </div>
         ) : (
-          <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-2 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
+          <div ref={cardRef} className={`card-oval card-responsive flex flex-col items-center py-2 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
             {/* Trophy Icon */}
             <div className="w-16 h-16 trophy-gradient-bg rounded-full flex items-center justify-center mb-2">
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -293,14 +293,14 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
                 <button
                   className="fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 bg-shikho-yellow text-shikho-blue font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg"
                   onClick={handleShare}
-                  style={{ maxWidth: '90vw' }}
+                  style={{ maxWidth: '90vw', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}
                 >
                   শেয়ার করো!
                 </button>
               </div>
             )}
             {/* Student name and class */}
-            <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
+            <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display" style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}>
               <p className="text-gray-500 font-noto-bengali text-sm">
                 <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
               </p>

@@ -13,7 +13,8 @@
 
 body {
   @apply bg-gray-50;
-  overflow: hidden;
+  /* Prevent horizontal scroll while allowing slides to scroll vertically on short screens */
+  overflow-x: hidden;
 }
 
 .gradient-bg {
@@ -74,10 +75,30 @@ body {
 }
 
 .slide-container {
+  /* Use dynamic viewport units with safe fallbacks across mobile browsers */
   height: 100dvh;
-  min-height: 0 !important;
+  min-height: 100dvh;
   max-height: 100dvh;
-  overflow: hidden;
+  /* Allow vertical scrolling if content slightly overflows; never allow horizontal */
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Prefer small-viewport height when available to avoid address bar overlap */
+@supports (height: 100svh) {
+  .slide-container {
+    height: 100svh;
+    min-height: 100svh;
+    max-height: 100svh;
+  }
+}
+
+/* Reusable responsive width for central cards on mobile */
+.card-responsive {
+  width: min(92vw, 420px);
+  max-width: min(92vw, 420px);
 }
 
 .confetti {
@@ -98,7 +119,8 @@ body {
 
 .fixed-dot-indicator {
   @apply fixed left-1/2 -translate-x-1/2 z-30 flex justify-center items-center gap-1;
-  top: 20px;
+  /* Respect safe areas on modern phones */
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
   width: 100vw;
   max-width: 100vw;
   pointer-events: none;

@@ -104,7 +104,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
           </div>
         )}
         {/* Card */}
-        <div ref={cardRef} className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
+        <div ref={cardRef} className={`card-oval card-responsive flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
           {/* Header */}
           <div className="text-center mb-1 mt-1">
             <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'}`}>{texts.header}</h1>
@@ -214,14 +214,14 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
             <button
               className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
               onClick={handleShare}
-              style={{ maxWidth: '90vw' }}
+              style={{ maxWidth: '90vw', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}
             >
               শেয়ার করো!
             </button>
           </div>
         )}
         {/* Student name and class - visible in both normal and sharing modes */}
-        <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
+        <div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display" style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}>
           <p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-white/80' : 'text-gray-500'}`}>
             <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
           </p>

@@ -5,6 +5,7 @@ import { useShare } from '../hooks/useShare';
 import { FallbackModal } from './FallbackModal';
 import { ArrowButton } from './ArrowButton';
 import { getGradientClass } from '../utils/gradientManager';
+
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { useStudentDataContext } from '../context/StudentDataContext';
 import type { StudentData } from '../utils/mockStudents';
@@ -32,7 +33,7 @@ export const YearlySubjectPodiumSlide = ({ studentData, onPrev, onNext }: Yearly
 
 	// Mock data - Top 3 subjects
 	const topSubjects = [
-		{ rank: 2, name: 'গণিত', score: 80, color: 'bg-purple-200 text-purple-700', accent: 'bg-purple-400' }, // Left
+		{ rank: 2, name: 'বাংলা', score: 80, color: 'bg-purple-200 text-purple-700', accent: 'bg-purple-400' }, // Left
 		{ rank: 1, name: 'গণিত', score: 90, color: 'bg-orange-200 text-orange-700', accent: 'bg-orange-400' }, // Center (Tallest)
 		{ rank: 3, name: 'জীববিজ্ঞান', score: 78, color: 'bg-yellow-200 text-yellow-700', accent: 'bg-yellow-400' } // Right
 	];
@@ -75,6 +76,7 @@ export const YearlySubjectPodiumSlide = ({ studentData, onPrev, onNext }: Yearly
 				) : (
 					<div className={gradientClass} />
 				)}
+				{/* Background now shows bunting from the image (top-aligned) on all screens */}
 				{/* Dot indicators */}
 				{!hideUI && (
 					<div className="fixed-dot-indicator">
@@ -93,7 +95,7 @@ export const YearlySubjectPodiumSlide = ({ studentData, onPrev, onNext }: Yearly
 				{/* Card */}
 				<div
 					ref={cardRef}
-					className={`card-oval w-[80vw] max-w-[80vw] flex flex-col items-center relative py-2 px-3 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}
+					className={`card-oval card-responsive flex flex-col items-center relative py-2 px-3 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}
 				>
 					{/* Header */}
 					<div className="text-center mb-1 mt-1 px-2">
@@ -220,7 +222,7 @@ export const YearlySubjectPodiumSlide = ({ studentData, onPrev, onNext }: Yearly
 						<button
 							className={`fixed left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 font-noto-bengali font-bold rounded-full text-base px-4 py-2 sm:text-lg sm:px-8 sm:py-3 shadow-lg ${reportMode === 'YEARLY' ? 'bg-white text-[#16325B]' : 'bg-shikho-yellow text-shikho-blue'}`}
 							onClick={handleShare}
-							style={{ maxWidth: '90vw' }}
+							style={{ maxWidth: '90vw', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}
 						>
 							শেয়ার করো!
 						</button>
@@ -228,7 +230,7 @@ export const YearlySubjectPodiumSlide = ({ studentData, onPrev, onNext }: Yearly
 				)}
 
 				{/* Student name and class */}
-				<div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display">
+				<div className="fixed left-1/2 bottom-16 mb-2 z-30 text-center student-name-display" style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}>
 					<p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-500'}`}>
 						<span className="font-semibold">{studentData.name}</span> • {studentData.class}
 					</p>
