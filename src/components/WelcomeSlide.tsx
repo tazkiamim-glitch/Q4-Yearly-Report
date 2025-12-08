@@ -172,8 +172,8 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
 
         {/* Class and section info above share button */}
         {!hideUI && (
-          <div className="fixed left-1/2 -translate-x-1/2 bottom-20 z-30 text-center" style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}>
-            <p className={`font-noto-bengali text-sm font-bold ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-600'}`}>
+          <div className="fixed left-1/2 -translate-x-1/2 bottom-20 z-30 text-center student-name-display" style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}>
+            <p className={`font-noto-bengali text-sm ${reportMode === 'YEARLY' ? 'text-gray-600' : 'text-gray-500'}`}>
               <span className='font-semibold'>{studentData.name}</span> • {studentData.class}
             </p>
           </div>
