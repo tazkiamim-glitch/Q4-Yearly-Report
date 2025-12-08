@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { FallbackModal } from './FallbackModal';
+import { BuntingOverlay } from './BuntingOverlay';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
@@ -77,13 +78,14 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
           src="/shikho_logo.png"
           alt="Shikho Logo"
           className="absolute z-50 left-1/2 -translate-x-1/2 w-10 h-10 h-sm:w-14 h-sm:h-14 h-md:w-16 h-md:h-16"
-          style={{ top: 30 }}
+          style={{ top: 40 }}
         />
 
         {reportMode === 'YEARLY' ? (
           <>
             <div className="gradient-bg-final-yearly" />
-            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+            <div className="pointer-events-none fixed inset-0 bg-white/35" />
+            <BuntingOverlay />
           </>
         ) : (
           <div className={gradientClass} />
@@ -104,20 +106,20 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
           </div>
         )}
         {/* Card */}
-        <div ref={cardRef} className={`card-oval card-responsive flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}>
+        <div ref={cardRef} className={`card-oval card-responsive flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
           {/* Header */}
           <div className="text-center mb-1 mt-1">
             <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'}`}>{texts.header}</h1>
           </div>
           {/* Streak Boxes */}
-          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 my-4 w-full">
+          <div className="grid grid-cols-7 gap-1.5 sm:gap-2 my-4 w-full">
             {boxes.map((num, idx) => {
               // For streak 0, only one box, styled as grey
               if (streak === 0) {
                 return (
                   <span
                     key={num}
-                    className="min-w-[36px] sm:min-w-[40px] h-8 flex items-center justify-center px-1.5 sm:px-2 rounded-md font-bold text-base sm:text-lg font-noto-bengali bg-gray-200 text-gray-400 border border-gray-300 streak-box-text"
+                    className="w-full min-w-0 h-8 flex items-center justify-center px-1.5 sm:px-2 rounded-md font-bold text-base sm:text-lg font-noto-bengali bg-gray-200 text-gray-400 border border-gray-300 streak-box-text"
                   >
                     <span className="streak-box-number">{toBengaliNumber(num)}</span>
                   </span>
@@ -128,7 +130,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
               return (
                 <span
                   key={num}
-                  className={`min-w-[36px] sm:min-w-[40px] h-8 flex items-center justify-center px-1.5 sm:px-2 rounded-md font-bold text-base sm:text-lg font-noto-bengali transition-colors duration-300 streak-box-text
+                  className={`w-full min-w-0 h-8 flex items-center justify-center px-1.5 sm:px-2 rounded-md font-bold text-base sm:text-lg font-noto-bengali transition-colors duration-300 streak-box-text
                     ${isLast
                       ? 'bg-gray-200 text-gray-400 border border-gray-300'
                       : idx < activeBoxes

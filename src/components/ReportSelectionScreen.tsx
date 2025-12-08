@@ -18,7 +18,7 @@ export const ReportSelectionScreen = ({ onSelectMode }: ReportSelectionScreenPro
         src="/shikho_logo.png"
         alt="Shikho Logo"
         className="absolute z-50 left-1/2 -translate-x-1/2 w-10 h-10 h-sm:w-14 h-sm:h-14 h-md:w-16 h-md:h-16"
-        style={{ top: 30 }}
+        style={{ top: 40 }}
       />
 
       <div className="gradient-bg" />

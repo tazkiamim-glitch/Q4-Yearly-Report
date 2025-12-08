@@ -4,6 +4,7 @@ import { Confetti } from './Confetti';
 import { useShare } from '../hooks/useShare';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
 import { FallbackModal } from './FallbackModal';
+import { BuntingOverlay } from './BuntingOverlay';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { getGradientClass } from '../utils/gradientManager';
@@ -76,7 +77,7 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
   return (
     <>
       <div
-        className={`slide-container relative px-2${reportMode === 'YEARLY' ? ' final-yearly min-h-screen h-full overflow-y-auto pt-16 md:pt-20 pb-0 md:pb-2 flex flex-col items-center justify-center' : ' flex flex-col items-center justify-center'}${hideUI ? ' sharing-mode' : ''}`}
+        className={`slide-container relative px-2${reportMode === 'YEARLY' ? ' final-yearly min-h-screen h-full overflow-y-auto pt-24 sm:pt-16 md:pt-20 pb-0 md:pb-2 flex flex-col items-center justify-center' : ' flex flex-col items-center justify-center'}${hideUI ? ' sharing-mode' : ''}`}
         style={reportMode === 'YEARLY' ? undefined : undefined}
       >
         {/* Shikho logo - positioned inside slide container to be captured in screenshot */}
@@ -84,14 +85,15 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
           src="/shikho_logo.png"
           alt="Shikho Logo"
           className="absolute z-50 left-1/2 -translate-x-1/2 w-10 h-10 h-sm:w-14 h-sm:h-14 h-md:w-16 h-md:h-16"
-          style={{ top: 30 }}
+          style={{ top: 40 }}
         />
 
         {/* Background */}
         {reportMode === 'YEARLY' ? (
           <>
             <div className="gradient-bg-final-yearly" />
-            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+            <div className="pointer-events-none fixed inset-0 bg-white/35" />
+            <BuntingOverlay />
           </>
         ) : (
           <div className={gradientClass} />
@@ -130,8 +132,8 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
                 ref={cardRef}
                 className={`relative z-10 card-responsive pt-24 pb-8 px-4 rounded-3xl text-center border border-white/20 shadow-[0_0_30px_rgba(59,130,246,0.35)] backdrop-blur-md overflow-hidden fade-in-slide${isVisible ? ' visible' : ''}`}
               >
-                {/* Glass gradient background layer */}
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-400/30 to-purple-700/60 z-0" />
+                {/* Glass gradient background layer (bottom → top; top lighter, softened white) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-purple-700/60 to-white/80 z-0" />
                 {/* Content above the background */}
                 <div className="relative z-10">
                   {/* Rank Badge */}
@@ -141,7 +143,7 @@ export const FinalCongratsSlide = ({ studentData, onPrev, onNext }: FinalCongrat
                     </span>
                   </div>
                   {/* Title */}
-                  <h2 className="text-white font-bold text-lg mb-6 drop-shadow-md font-noto-bengali">
+                  <h2 className="text-[#354894] font-bold text-lg mb-6 drop-shadow-md font-noto-bengali">
                     {texts.header}
                   </h2>
                   {/* Inner Score Box (darker glass) */}

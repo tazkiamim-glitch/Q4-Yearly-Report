@@ -218,10 +218,39 @@ body {
 /* Yearly report backgrounds */
 .gradient-bg-final-yearly {
   @apply min-h-screen w-full fixed top-0 left-0 z-0;
-  background-image: url('/screen bg.png');
+  background: linear-gradient(180deg, #EB46B4 0%, #F7C1E9 65%, #FFFFFF 100%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+/* Bunting overlay (flags) */
+.bunting-overlay {
+  position: absolute;
+  top: -12px;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 10; /* Above background, below cards/dots/buttons */
+  pointer-events: none; /* Clicks pass through */
+  filter: drop-shadow(2px 4px 4px rgba(53, 72, 148, 0.2));
+}
+.bunting-overlay .string { fill: none; stroke: #354894; stroke-width: 3; stroke-linecap: round; }
+.bunting-overlay .flag-pink { fill: #CF278D; }
+.bunting-overlay .flag-yellow { fill: #EFAD1E; }
+.bunting-overlay .flag-red { fill: #EE3D5E; }
+.bunting-overlay .flag-blue { fill: #354894; }
+
+/* Mobile optimization: show only one string and avoid logo overlap */
+@media (max-width: 768px) {
+  .bunting-overlay .row-bottom {
+    display: none;
+  }
+  .bunting-overlay {
+    top: -16px; /* raise slightly on mobile */
+    height: auto;
+    max-height: 140px;
+  }
 }
 
 /* Replaces old PNG final background with pure CSS.
@@ -239,14 +268,17 @@ body {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    radial-gradient(ellipse at 50% 100%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.18) 25%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.00) 60%),
-    repeating-conic-gradient(
-      from 270deg at 50% 100%,
-      rgba(255,255,255,0.35) 0deg 8deg,
-      rgba(255,255,255,0.00) 8deg 20deg
-    );
-  mix-blend-mode: screen;
+  background: linear-gradient(180deg, #EB46B4 0%, #F7C1E9 65%, #FFFFFF 100%);
+  mix-blend-mode: normal;
   pointer-events: none;
+}
+
+/* New class per requirement: smooth radial gradient, center to edges */
+.sunburst {
+  @apply min-h-screen w-full fixed top-0 left-0 z-0;
+  background: linear-gradient(180deg, #EB46B4 0%, #F7C1E9 65%, #FFFFFF 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 

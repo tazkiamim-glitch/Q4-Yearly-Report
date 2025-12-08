@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useShare } from '../hooks/useShare';
 import { FallbackModal } from './FallbackModal';
+import { BuntingOverlay } from './BuntingOverlay';
 import { ArrowButton } from './ArrowButton';
 import { getStudentTexts } from '../utils/studentTexts';
 import { toBengaliNumber } from '../utils/bengaliNumbers';
@@ -68,11 +69,12 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
         src="/shikho_logo.png"
         alt="Shikho Logo"
         className="absolute z-50 left-1/2 -translate-x-1/2 w-10 h-10 h-sm:w-14 h-sm:h-14 h-md:w-16 h-md:h-16"
-        style={{ top: 30 }}
+        style={{ top: 40 }}
       />
 
       <div className="gradient-bg-final-yearly" />
-      <div className="pointer-events-none fixed inset-0 bg-white/45" />
+      <div className="pointer-events-none fixed inset-0 bg-white/35" />
+      <BuntingOverlay />
 
       {!hideUI && (
         <div className="fixed-dot-indicator">
@@ -86,7 +88,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
         </div>
       )}
 
-      <div className="card-oval card-responsive flex flex-col items-center px-4 card-oval-compact mb-6 fade-in-slide visible overflow-visible bg-gradient-to-b from-white to-[#EAF2FF]">
+      <div className="card-oval card-responsive flex flex-col items-center px-4 card-oval-compact mb-6 fade-in-slide visible overflow-visible">
         <div className="text-center mb-0 px-3">
           <h1 className="text-[#354894] text-xl font-bold text-center font-noto-bengali">
             {texts.header}
@@ -195,7 +197,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
           >
             <div className="bg-white rounded px-1 text-center leading-tight z-10 shadow-md">
               <div className="text-[10px] font-noto-bengali font-semibold text-blue-500">কোয়ার্টার ১</div>
-              <div className="text-[10px] font-noto-bengali text-gray-700">{formatHours(resolvedData.q1)}</div>
+              <div className="text-[12px] font-noto-bengali text-gray-700">{formatHours(resolvedData.q1)}</div>
             </div>
             <svg width="28" height="28" viewBox="0 0 24 24">
               <defs>
@@ -219,7 +221,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
           >
             <div className="bg-white rounded px-1 text-center leading-tight z-10 shadow-md">
               <div className="text-[10px] font-noto-bengali font-semibold text-emerald-500">কোয়ার্টার ২</div>
-              <div className="text-[10px] font-noto-bengali text-gray-700">{formatHours(resolvedData.q2)}</div>
+              <div className="text-[12px] font-noto-bengali text-gray-700">{formatHours(resolvedData.q2)}</div>
             </div>
             <svg width="28" height="28" viewBox="0 0 24 24">
               <defs>
@@ -243,7 +245,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
           >
             <div className="bg-white rounded px-1 text-center leading-tight z-10 shadow-md">
               <div className="text-[10px] font-noto-bengali font-semibold text-amber-500">কোয়ার্টার ৩</div>
-              <div className="text-[10px] font-noto-bengali text-gray-700">{formatHours(resolvedData.q3)}</div>
+              <div className="text-[12px] font-noto-bengali text-gray-700">{formatHours(resolvedData.q3)}</div>
             </div>
             <svg width="28" height="28" viewBox="0 0 24 24">
               <defs>
@@ -263,11 +265,11 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 120, damping: 12, delay: 1.1 }}
             className="absolute flex flex-col items-center"
-            style={{ left: '85%', top: '48%', transform: 'translate(-50%, -100%)' }}
+            style={{ left: '82%', top: '48%', transform: 'translate(-50%, -100%)' }}
           >
             <div className="bg-white rounded px-1 text-center leading-tight z-10 shadow-md">
               <div className="text-[10px] font-noto-bengali font-semibold text-pink-500">কোয়ার্টার ৪</div>
-              <div className="text-[10px] font-noto-bengali text-gray-700">{formatHours(resolvedData.q4)}</div>
+              <div className="text-[12px] font-noto-bengali text-gray-700">{formatHours(resolvedData.q4)}</div>
             </div>
             <svg width="28" height="28" viewBox="0 0 24 24">
               <defs>

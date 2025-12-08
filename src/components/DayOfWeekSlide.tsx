@@ -11,6 +11,7 @@ import type { EngagementLevel } from '../utils/studentTexts';
 import type { StudentData } from '../utils/mockStudents';
 import type { ReportMode } from '../context/StudentDataContext';
 import { FaCalendarCheck } from 'react-icons/fa';
+import { BuntingOverlay } from './BuntingOverlay';
 
 interface DayOfWeekSlideProps {
   studentData: StudentData;
@@ -100,13 +101,14 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
           src="/shikho_logo.png"
           alt="Shikho Logo"
           className="absolute z-50 left-1/2 -translate-x-1/2 w-10 h-10 h-sm:w-14 h-sm:h-14 h-md:w-16 h-md:h-16"
-          style={{ top: 30 }}
+          style={{ top: 40 }}
         />
         {/* Background */}
         {reportMode === 'YEARLY' ? (
           <>
             <div className="gradient-bg-final-yearly" />
-            <div className="pointer-events-none fixed inset-0 bg-white/45" />
+            <div className="pointer-events-none fixed inset-0 bg-white/35" />
+            <BuntingOverlay />
           </>
         ) : (
           <div className={gradientClass} />
@@ -129,7 +131,7 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
         {/* Card */}
         <div
           ref={cardRef}
-          className={`card-oval card-responsive flex flex-col items-center py-6 mb-4 fade-in-slide${isVisible ? ' visible' : ''} ${reportMode === 'YEARLY' ? 'bg-gradient-to-b from-white to-[#EAF2FF]' : ''}`}
+          className={`card-oval card-responsive flex flex-col items-center py-6 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}
         >
           {/* Header */}
           <h2 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'} mb-2`}>{texts.header}</h2>
