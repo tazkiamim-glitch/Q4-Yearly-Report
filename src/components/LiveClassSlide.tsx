@@ -146,7 +146,7 @@ export const LiveClassSlide = ({ studentData, onPrev, onNext }: LiveClassSlidePr
         >
           {/* Header */}
           <div className="text-center mb-1 mt-1 px-2">
-            <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${isYearlyReport ? 'text-xl' : 'text-lg'} mb-0`}>
+            <h1 className="text-[#354894] font-bold text-center font-noto-bengali text-lg mb-0">
               {texts.header}
             </h1>
           </div>

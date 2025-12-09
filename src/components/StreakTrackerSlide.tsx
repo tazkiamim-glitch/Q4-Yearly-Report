@@ -109,7 +109,7 @@ export const StreakTrackerSlide = ({ studentData, onPrev, onNext }: StreakTracke
         <div ref={cardRef} className={`card-oval card-responsive flex flex-col items-center py-4 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}>
           {/* Header */}
           <div className="text-center mb-1 mt-1">
-            <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'}`}>{texts.header}</h1>
+            <h1 className="text-[#354894] font-bold text-center font-noto-bengali text-lg">{texts.header}</h1>
           </div>
           {/* Streak Boxes */}
           <div className="grid grid-cols-7 gap-1.5 sm:gap-2 my-4 w-full">

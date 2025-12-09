@@ -134,7 +134,7 @@ export const DayOfWeekSlide = ({ studentData, onPrev, onNext }: DayOfWeekSlidePr
           className={`card-oval card-responsive flex flex-col items-center py-6 mb-4 fade-in-slide${isVisible ? ' visible' : ''}`}
         >
           {/* Header */}
-          <h2 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'} mb-2`}>{texts.header}</h2>
+          <h2 className="text-[#354894] font-bold text-center font-noto-bengali text-lg mb-2">{texts.header}</h2>
 
           {/* Bar Chart (Flexbox) */}
           <div className="mb-8 w-full flex items-center justify-center" style={{ minHeight: 180 }}>

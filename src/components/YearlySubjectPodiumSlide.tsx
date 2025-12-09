@@ -101,7 +101,7 @@ export const YearlySubjectPodiumSlide = ({ studentData, onPrev, onNext }: Yearly
 				>
 					{/* Header */}
 					<div className="text-center mb-1 mt-1 px-2">
-						<h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'} mb-0`}>
+						<h1 className="text-[#354894] font-bold text-center font-noto-bengali text-lg mb-0">
 							লাইভ এক্সামগুলোর স্কোরে তোমার সেরা ৩টি বিষয়!
 						</h1>
 					</div>

@@ -90,7 +90,7 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
 
       <div className="card-oval card-responsive flex flex-col items-center px-4 card-oval-compact mb-6 fade-in-slide visible overflow-visible">
         <div className="text-center mb-0 px-3">
-          <h1 className="text-[#354894] text-xl font-bold text-center font-noto-bengali">
+          <h1 className="text-[#354894] text-lg font-bold text-center font-noto-bengali">
             {texts.header}
           </h1>
         </div>
@@ -292,7 +292,8 @@ export const YearlyStudyTimeSlide = ({ studentData, onPrev, onNext, data }: Year
           </div>
         </div>
         <p className="text-gray-600 text-sm text-center font-medium font-noto-bengali px-4 mt-2 mb-2">
-          তুমি সারা বছরে মোট <span className="text-shikho-pink font-semibold">{totalHoursBn}</span> পড়েছ - না ঘুমিয়ে টানা প্রায় <span className="text-shikho-pink font-semibold">{approxDaysBn} দিন</span> পড়াশোনার সমান!
+          তুমি সারা বছরে মোট <span className="text-shikho-pink font-semibold">{totalHoursBn}</span> পড়েছ -<br />
+          না ঘুমিয়ে টানা প্রায় <span className="text-shikho-pink font-semibold">{approxDaysBn} দিন</span> পড়াশোনার সমান!
         </p>
 
       </div>

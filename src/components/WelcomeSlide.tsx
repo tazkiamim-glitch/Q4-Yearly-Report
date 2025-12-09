@@ -103,7 +103,7 @@ export const WelcomeSlide = ({ studentData, onNext }: WelcomeSlideProps) => {
           {/* Header */}
           {texts.header && (
             <div className="text-center mb-1 mt-1 px-2">
-              <h1 className={`text-[#354894] font-bold text-center font-noto-bengali ${reportMode === 'YEARLY' ? 'text-xl' : 'text-lg'} mb-2`}>
+              <h1 className="text-[#354894] font-bold text-center font-noto-bengali text-lg mb-2">
                 {texts.header}
               </h1>
             </div>
